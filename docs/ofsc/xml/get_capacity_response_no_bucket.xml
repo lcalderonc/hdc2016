@@ -1,0 +1,33 @@
+<SOAP-ENV:Envelope SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:si="http://soapinterop.org/xsd" xmlns:ns1="http://toatech.com/toa-soap/1.0/" xmlns:tns="NameSpace">
+   <SOAP-ENV:Body>
+      <urn:get_capacity_response xmlns:urn="urn:toa:capacity">
+         <capacity>
+            <location>BK_PRUEBAS_TOA</location>
+            <date>2015-11-20</date>
+            <quota>0</quota>
+            <available>-127</available>
+         </capacity>
+         <capacity>
+            <location>BK_PRUEBAS_TOA</location>
+            <date>2015-11-20</date>
+            <time_slot>14PM - 16PM</time_slot>
+            <quota>0</quota>
+            <available>-127</available>
+         </capacity>
+         <capacity>
+            <location>BK_PRUEBAS_TOA</location>
+            <date>2015-11-20</date>
+            <time_slot>14PM - 16PM</time_slot>
+            <work_skill>PROV_INS_CATV</work_skill>
+            <quota>0</quota>
+            <available>-127</available>
+         </capacity>
+         <time_slot_info>
+            <name>14-16</name>
+            <label>14PM - 16PM</label>
+            <time_from>14:00:00</time_from>
+            <time_to>16:00:00</time_to>
+         </time_slot_info>
+      </urn:get_capacity_response>
+   </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

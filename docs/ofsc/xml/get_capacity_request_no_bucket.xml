@@ -1,0 +1,55 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:toa:capacity">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:get_capacity>
+         <user>
+            <now>2015-11-20T09:52:33-05:00</now>
+            <login>soap</login>
+            <company>telefonica-pe.test</company>
+            <auth_string>e05955019f7f6e89b3fc1216a07daf5f</auth_string>
+         </user>
+         <!--1 or more repetitions:-->
+         <date>2015-11-20</date>
+         <date>2015-11-21</date>
+         <!--Zero or more repetitions:-->
+         <!--<location>BK_PRUEBAS_TOA</location>-->
+         <!--Optional:-->
+         <calculate_duration>false</calculate_duration>
+         <!--Optional:-->
+         <calculate_travel_time>false</calculate_travel_time>
+         <!--Optional:-->
+         <calculate_work_skill>true</calculate_work_skill>
+         <!--Optional:-->
+         <return_time_slot_info>true</return_time_slot_info>
+         <!--Optional:-->
+         <determine_location_by_work_zone>true</determine_location_by_work_zone>
+         <!--Optional:-->
+         <dont_aggregate_results>false</dont_aggregate_results>
+         <!--Optional:-->
+         <min_time_to_end_of_time_slot>0</min_time_to_end_of_time_slot>
+         <!--Optional:-->
+         <default_duration>60</default_duration>
+         <!--Zero or more repetitions:-->
+         <time_slot></time_slot>
+         <!--Zero or more repetitions:-->
+         <work_skill></work_skill>
+         <!--Zero or more repetitions:-->
+         <activity_field>
+            <name>worktype_label</name>
+            <value>PROV_INS_CATV</value>
+         </activity_field>
+         <activity_field>
+            <name>XA_WORK_ZONE_KEY</name>
+            <value>MY</value>
+         </activity_field>
+         <!--<activity_field>
+            <name>XA_CABINET</name>
+            <value></value>
+         </activity_field>
+         <activity_field>
+            <name>XA_QUADRANT</name>
+            <value></value>
+         </activity_field>-->
+      </urn:get_capacity>
+   </soapenv:Body>
+</soapenv:Envelope>
