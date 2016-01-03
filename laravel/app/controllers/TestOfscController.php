@@ -22,7 +22,7 @@ class TestOfscController extends \BaseController {
     public function getGetactivity()
     {
         $activity =  new Activity();
-        dd("Home");
+        //dd("Home");
         $response = $activity->getActivity(434);
         
         print_r($response);

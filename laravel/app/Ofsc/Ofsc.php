@@ -109,33 +109,53 @@ class Ofsc
         $response = new \stdClass();       
         
         try {
+
             $response->error = false;
             $requestArray = array_merge($this->getAuthArray(), $setArray);
             $result = $this->_client->__soapCall(
                 $action, array("request"=>$requestArray)
-            );
+            );    
+ 
+           if ($result->result_code == 0) {
+
+                for ($i=0; $i < count($result->activity->properties) -1; $i++) {
+
+                    $nombre = $result->activity->properties[$i]->name;
+                    $valor = $result->activity->properties[$i]->value;
+
+                    $arrayRespuesta[] = $nombre.":".$valor;
+                } 
+
+                $resultadoArrayResp = implode("|", $arrayRespuesta);
+
+                $envios = new \EnvioOfsc();
+                $envios->registrarAccionWebservice(
+                    $action, $resultaoArrayReq,
+                    $resultadoArrayResp
+                );
+
+     
+           } else {
+
+                $envios = new \EnvioOfsc();
+                $envios->registrarAccionWebservice(
+                    $action, $resultaoArrayReq,
+                    $result->error_msg, 0
+                );
+
+           }
+
+
+ // print htmlentities($this->_client->__getLastResponse());
+
             
-            
-            //print_r($result);
+  
+             //dd("Home");
             $response->data = $result;
 
-            //foreach($response->data as $respuesta) 
-            //{
-            $resultaoArrayResp = implode("|", $result);
-
-            //}
-
-
-            //\EnvioOfsc::registrarAccionWebservice($action,
-            // $requestArray, $result);
-            $envios = new EnvioOfsc();
-            $envios->registrarAccionWebservice(
-                $action, $resultaoArrayReq,
-                $resultaoArrayResp
-            );
-
             //$response->data = simplexml_load_string($xml);
-            //$xml = $this->client->__soapCall($action, $requestArray);print_r($xml);
+            //$xml = $this->client->__soapCall($action, $requestArray);
+            //print_r($xml);
             
             //->Inicio respuesta test
             //$responseFunc = $action . '_response';
@@ -151,7 +171,7 @@ class Ofsc
             $response->errorString = $fault->faultstring;
 
             //Registro de webservice fallido
-            $envios = new EnvioOfsc();
+            $envios = new \EnvioOfsc();
             $envios->registrarAccionWebservice(
                 $action, 
                 $resultaoArrayReq, "", 0
@@ -163,7 +183,7 @@ class Ofsc
             $response->errorString = $error->getMessage();
 
             //Registro de webservice fallido
-            $envios = new EnvioOfsc();
+            $envios = new \EnvioOfsc();
             $envios->registrarAccionWebservice(
                 $action, 
                 $resultaoArrayReq, "", 0
