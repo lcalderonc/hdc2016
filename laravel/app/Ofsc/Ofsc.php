@@ -116,34 +116,6 @@ class Ofsc
                 $action, array("request"=>$requestArray)
             );    
  
-           if ($result->result_code == 0) {
-
-                for ($i=0; $i < count($result->activity->properties) -1; $i++) {
-
-                    $nombre = $result->activity->properties[$i]->name;
-                    $valor = $result->activity->properties[$i]->value;
-
-                    $arrayRespuesta[] = $nombre.":".$valor;
-                } 
-
-                $resultadoArrayResp = implode("|", $arrayRespuesta);
-
-                $envios = new \EnvioOfsc();
-                $envios->registrarAccionWebservice(
-                    $action, $resultaoArrayReq,
-                    $resultadoArrayResp
-                );
-
-     
-           } else {
-
-                $envios = new \EnvioOfsc();
-                $envios->registrarAccionWebservice(
-                    $action, $resultaoArrayReq,
-                    $result->error_msg, 0
-                );
-
-           }
 
 
  // print htmlentities($this->_client->__getLastResponse());
