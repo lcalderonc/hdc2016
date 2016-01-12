@@ -10,6 +10,7 @@
             </div>
             <div class="modal-body">
                 <form id="form_actividades" name="form_actividades" action="" method="post">
+                    <input type="hidden" name="txt_token" id="txt_token" value="<?php echo Session::get('s_token');?>" />   
                     <div class="form-group">
                         <label class="control-label">Nombre
                             <a id="error_nombre" style="display:none" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="bottom" title="Ingrese Nombre">

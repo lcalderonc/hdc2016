@@ -4,9 +4,12 @@ $.extend( true, $.fn.dataTable.defaults, {
 		"<''<'col-sm-6'l><'col-sm-6'f>r>"+
 		"t"+
 		"<''<'col-sm-6'i><'col-sm-6'p>>",
-	"oLanguage": {
+/*	"oLanguage": {			
 		"sLengthMenu": "_MENU_ records per page"
-	}
+	}*/
+	"oLanguage": {
+	  "sUrl": "lib/datatables-1.10.4/media/language/custom_lang_es.txt"
+	}	
 } );
 
 

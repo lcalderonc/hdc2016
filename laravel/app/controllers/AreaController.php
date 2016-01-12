@@ -6,6 +6,7 @@ class AreaController extends BaseController
     public function __construct(ErrorController $ErrorController)
     {
         $this->error = $ErrorController;
+        $this->beforeFilter('csrf_token', ['only' => ['postCrear', 'postEditar']]);
     }
     /**
      * cargar areas, mantenimiento
@@ -54,39 +55,43 @@ class AreaController extends BaseController
     {
         //si la peticion es ajax
         if ( Request::ajax() ) {
-            $regex='regex:/^([a-zA-Z .,ñÑÁÉÍÓÚáéíóú]{2,60})$/i';
-            $required='required';
-            $reglas = array(
-                'nombre' => $required.'|'.$regex,
-            );
+//            if (Input::get('txt_token') != Session::get('s_token')) { 
+//                die('token no valido!! Token Input: '.Input::get('txt_token').' Token Session: '.Session::get('s_token'));
+//            } else {
+                $regex='regex:/^([a-zA-Z .,ñÑÁÉÍÓÚáéíóú]{2,60})$/i';
+                $required='required';
+                $reglas = array(
+                    'nombre' => $required.'|'.$regex,
+                );
 
-            $mensaje= array(
-                'required'    => ':attribute Es requerido',
-                'regex'        => ':attribute Solo debe ser Texto',
-            );
+                $mensaje= array(
+                    'required'    => ':attribute Es requerido',
+                    'regex'        => ':attribute Solo debe ser Texto',
+                );
 
-            $validator = Validator::make(Input::all(), $reglas, $mensaje);
+                $validator = Validator::make(Input::all(), $reglas, $mensaje);
 
-            if ( $validator->fails() ) {
+                if ( $validator->fails() ) {
+                    return Response::json(
+                        array(
+                        'rst'=>2,
+                        'msj'=>$validator->messages(),
+                        )
+                    );
+                }
+
+                $areas = new Area;
+                $areas->nombre = Input::get('nombre');
+                $areas->estado = Input::get('estado');
+                $areas->save();
+
                 return Response::json(
                     array(
-                    'rst'=>2,
-                    'msj'=>$validator->messages(),
+                    'rst'=>1,
+                    'msj'=>'Registro realizado correctamente',
                     )
                 );
-            }
-
-            $areas = new Area;
-            $areas->nombre = Input::get('nombre');
-            $areas->estado = Input::get('estado');
-            $areas->save();
-
-            return Response::json(
-                array(
-                'rst'=>1,
-                'msj'=>'Registro realizado correctamente',
-                )
-            );
+//            } 
         }
     }
 
@@ -99,40 +104,44 @@ class AreaController extends BaseController
     public function postEditar()
     {
         if ( Request::ajax() ) {
-            $areaId = Input::get('id');
-            $regex='regex:/^([a-zA-Z .,ñÑÁÉÍÓÚáéíóú]{2,60})$/i';
-            $required='required';
-            $reglas = array(
-                'nombre' => $required.'|'.$regex.'|unique:areas,nombre,'.$areaId,
-            );
+//            if (Input::get('txt_token') != Session::get('s_token')) { 
+//                die('token no valido!! Token Input: '.Input::get('txt_token').' Token Session: '.Session::get('s_token'));
+//            } else {
+                $areaId = Input::get('id');
+                $regex='regex:/^([a-zA-Z .,ñÑÁÉÍÓÚáéíóú]{2,60})$/i';
+                $required='required';
+                $reglas = array(
+                    'nombre' => $required.'|'.$regex.'|unique:areas,nombre,'.$areaId,
+                );
 
-            $mensaje= array(
-                'required'    => ':attribute Es requerido',
-                'regex'        => ':attribute Solo debe ser Texto',
-            );
+                $mensaje= array(
+                    'required'    => ':attribute Es requerido',
+                    'regex'        => ':attribute Solo debe ser Texto',
+                );
 
-            $validator = Validator::make(Input::all(), $reglas, $mensaje);
+                $validator = Validator::make(Input::all(), $reglas, $mensaje);
 
-            if ( $validator->fails() ) {
+                if ( $validator->fails() ) {
+                    return Response::json(
+                        array(
+                        'rst'=>2,
+                        'msj'=>$validator->messages(),
+                        )
+                    );
+                }
+
+                $areas = Area::find($areaId);
+                $areas->nombre = Input::get('nombre');
+                $areas->estado = Input::get('estado');
+                $areas->save();
+
                 return Response::json(
                     array(
-                    'rst'=>2,
-                    'msj'=>$validator->messages(),
+                    'rst'=>1,
+                    'msj'=>'Registro actualizado correctamente',
                     )
                 );
-            }
-            
-            $areas = Area::find($areaId);
-            $areas->nombre = Input::get('nombre');
-            $areas->estado = Input::get('estado');
-            $areas->save();
-
-            return Response::json(
-                array(
-                'rst'=>1,
-                'msj'=>'Registro actualizado correctamente',
-                )
-            );
+//            }
         }
     }
 

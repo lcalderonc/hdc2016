@@ -1,6 +1,12 @@
 <?php
+use ClassOT\OfficeTrackGetSet;
 class OfficetrackController extends \BaseController
 {
+    public function __construct(ErrorController $ErrorController)
+    {
+        $this->error = $ErrorController;
+    }
+
     /**
      * Envio de una tarea hacia officetrack
      *
@@ -59,8 +65,8 @@ class OfficetrackController extends \BaseController
             $data['hora_agenda'] = "";
         }
         //$data['carnet']="LA0000";
-        $data['carnet'] = "666";
-        $data['codactu'] = 'TEST0006';
+        //$data['carnet'] = "666";
+        //$data['codactu'] = 'TEST0006';
 
         $agendaArray = explode("-", $data['hora_agenda']);
         if (isset($agendaArray[1])) {
@@ -236,7 +242,8 @@ class OfficetrackController extends \BaseController
         $postData = array(
             'cadena' => $cadena
         );
-        $ch = curl_init();
+        $result = $this->enviarOfficeTrack($postData);
+        /*$ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -246,7 +253,7 @@ class OfficetrackController extends \BaseController
         //Retorno
         $result = curl_exec($ch);
         curl_close($ch);
-
+        */
         return array('officetrack' => $result);
     }
 
@@ -511,4 +518,85 @@ class OfficetrackController extends \BaseController
         return json_encode($rot);
     }
 
+    private function enviarOfficeTrack($cadena)
+    {
+        //WebServices
+        $otWsdl["tareas"]["ID"]         = Config::get("ot.tareas.ID");
+        //$otWsdl["tareas"]["WSDL"]       = "http://officetrack.pe/services/TaskManagement.asmx?WSDL";
+        $otWsdl["tareas"]["WSDL"]       = Config::get("ot.tareas.WSDL");
+
+        $otWsdl["localizacion"]["ID"]   = Config::get("ot.localizacion.ID");
+        $otWsdl["localizacion"]["WSDl"] = Config::get("ot.localizacion.WSDL");
+
+        //Accesos
+
+        $otAccess["UserName"] = Config::get("ot.UserName");
+        $otAccess["Password"] = Config::get("ot.Password");
+        //set_include_path(get_include_path() . PATH_SEPARATOR . 'phpseclib');
+        //require_once ($_SERVER['DOCUMENT_ROOT'].'/webpsi20/laravel/app/classOT/officetrack.php');
+
+        $OfficeTrack = new OfficeTrackGetSet();
+        //Existe la variable "cadena"
+        $json = str_replace("&", "%26", $cadena['cadena']);
+        if (isset($cadena) and ! empty($json))
+        {
+            try {
+                //Validar cadena json
+                $object = json_decode($json);
+                if (is_object($object))
+                {
+                    //Cadena json OK, agregar usuario y clave
+                    $object->UserName = base64_decode($otAccess["UserName"]);
+                    $object->Password = base64_decode($otAccess["Password"]);
+
+                    //Convertir a XMl
+                    $xml = $this->arrayToXml(
+                        $object,
+                        '<CreateOrUpdateTaskRequest></CreateOrUpdateTaskRequest>'
+                    );
+
+                    $OfficeTrack->set_wsdl($otWsdl['tareas']['WSDL']);
+                    $tareas = $OfficeTrack->get_client();
+
+                    $result = $tareas->CreateOrUpdateTask(array('Request' => $xml));
+                    $otRes = $result->CreateOrUpdateTaskResult;
+                    //Almacenar trama enviada hacia OT
+
+                    $officetrackModel = new Officetrack();
+
+                    $officetrackModel->registrar($json, $result->CreateOrUpdateTaskResult);
+
+                    return $otRes;
+                } else {
+                    //Cadena KO
+                    throw new Exception("Cadena Json no valida");
+                }
+            } catch (Exception $exc) {
+                //print_r($exc);
+                //$this->error->handlerError($exc,$exc->getCode());
+                /*$fo = fopen("/var/www/test/error_registro", "w+");
+                fwrite($fo, date("Y-m-d H:i:s") . $exc->getMessage());
+                fclose($fo);*/
+            }
+        }
+    }
+
+    private function arrayToXml($array, $rootElement = null, $xml = null) {
+        $_xml = $xml;
+
+        if ($_xml === null) {
+            $_xml = new SimpleXMLElement($rootElement !== null ? $rootElement : '<root><root/>');
+        }
+
+        foreach ($array as $k => $v) {
+            if (is_array($v)) { //nested array
+                $this->arrayToXml($v, $k, $_xml->addChild($k));
+            } elseif(is_object($v)) {
+                $this->arrayToXml((array)$v, $k, $_xml->addChild($k));
+            } else {
+                $_xml->addChild($k, $v);
+            }
+        }
+        return $_xml->asXML();
+    }
 }

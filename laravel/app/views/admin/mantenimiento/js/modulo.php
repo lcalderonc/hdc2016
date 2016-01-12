@@ -10,7 +10,7 @@ $(document).ready(function() {
       var modal = $(this); //captura el modal
       modal.find('.modal-title').text(titulo+' Modulo');
       $('#form_modulos [data-toggle="tooltip"]').css("display","none");
-      $("#form_modulos input[type='hidden']").remove();
+//      $("#form_modulos input[type='hidden']").remove();
 
         if(titulo=='Nuevo'){
             modal.find('.modal-footer .btn-primary').text('Guardar');
@@ -19,12 +19,14 @@ $(document).ready(function() {
             $('#form_modulos #txt_nombre').focus();
             $('#form_modulos #slct_estado').show();
             $('#form_modulos .n_estado').remove();
+            $('#form_modulos #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else{
             modal.find('.modal-footer .btn-primary').text('Actualizar');
             modal.find('.modal-footer .btn-primary').attr('onClick','Editar();');
             $('#form_modulos #txt_nombre').val( $('#t_modulos #nombre_'+button.data('id') ).text() );
             $('#form_modulos #txt_path').val( $('#t_modulos #path_'+button.data('id') ).text() );
+            $('#form_modulos #txt_token').val("<?php echo Session::get('s_token');?>");
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {
                 $('#form_modulos .n_estado').remove();

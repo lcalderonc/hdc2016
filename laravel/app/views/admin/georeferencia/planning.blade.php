@@ -148,7 +148,6 @@
                     <div class="box-body"  style="min-height: 135px; max-height: 500px;">
                         <div class="col-sm-12">
                             <div class="col-sm-4">
-                             <label>Mapear:</label>
                              <select class="form-control" name="slct_tipo[]" id="slct_tipo" onchange="listtiponodo()">
                                 <option value="0" selected>.:: Seleccione ::.</option>
                                 <option value="mdf">MDF</option>
@@ -156,11 +155,9 @@
                              </select>
                             </div>
                             <div class="col-sm-4" id="divselect">
-                             <label>&nbsp;</label>
                              <select class="form-control" name="slct_nodo[]" id="slct_nodo" onchange="" ></select>
                             </div>
                             <div class="col-sm-4">
-                              <label>&nbsp;</label>
                               <input type="button" class="form-control btn-danger" value="Trazar Poligono" name="btn_trazar" id="btn_trazar">
                             </div>
                         </div>

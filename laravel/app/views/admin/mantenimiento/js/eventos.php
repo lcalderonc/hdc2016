@@ -13,7 +13,7 @@ $(document).ready(function() {
         var modal = $(this); //captura el modal
         modal.find('.modal-title').text(titulo+' Evento');
         $('#form_eventos [data-toggle="tooltip"]').css("display","none");
-        $("#form_eventos input[type='hidden']").remove();
+//        $("#form_eventos input[type='hidden']").remove();
         
         if(titulo=='Nuevo'){
            
@@ -29,6 +29,7 @@ $(document).ready(function() {
              $('#form_eventos #txt_valor_where').attr('disabled',true); 
              $('#form_eventos #txt_grupo').attr('disabled',true);  
              $('#form_eventos #txt_orden').attr('disabled',true);
+             $('#form_eventos #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else{
 
@@ -64,6 +65,7 @@ $(document).ready(function() {
             $('#form_eventos #txt_valor_where').val( eventosObj[eventos_id].valor_where );
             $('#form_eventos #txt_grupo').val( eventosObj[eventos_id].grupo );
             $('#form_eventos #txt_orden').val( eventosObj[eventos_id].orden );
+            $('#form_eventos #txt_token').val("<?php echo Session::get('s_token');?>");
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {
                 var est = eventosObj[eventos_id].estado;

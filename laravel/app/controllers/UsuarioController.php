@@ -9,6 +9,7 @@ class UsuarioController extends BaseController
     public function __construct()
     {
         $this->beforeFilter('auth'); // bloqueo de acceso
+        $this->beforeFilter('csrf_token', ['only' => ['postCrear', 'postEditar', 'postMisdatos']]);
     }
 
     public function postValidaacceso() 
@@ -403,7 +404,7 @@ class UsuarioController extends BaseController
             //empresas
             DB::table('empresa_usuario')
                     ->where('usuario_id', $usuarioId)
-                    ->update(array('estado' => 0));
+                    ->update(array('estado' => 3)); // 3 : eliminado permanente
 
             //si estado de usuario esta activo y no selecciono nin gun quebre
             if (Input::get('estado') == 1 
@@ -483,7 +484,7 @@ class UsuarioController extends BaseController
             $modulos = Input::get('modulos_selec');
             DB::table('submodulo_usuario')
                     ->where('usuario_id', $usuarioId)
-                    ->update(array('estado' => 0));
+                    ->update(array('estado' => 3)); // 3 : eliminado permanente
 
             if ($modulos) {//si selecciono algun menu
 
@@ -544,6 +545,7 @@ class UsuarioController extends BaseController
                                 ->update(array('estado' => 1));
                         }
                         if (Input::has('privilegio'.$submoduloId)) {
+                            if(Session::get('perfilId') == 8) $permisos = 'abc';
                             Submodulo::updatePrivilegios(
                                 $usuarioId, $submoduloId, $permisos
                             );
@@ -555,7 +557,7 @@ class UsuarioController extends BaseController
             //quiebregrupos
             DB::table('quiebre_grupo_usuario')
                     ->where('usuario_id', $usuarioId)
-                    ->update(array('estado' => 0));
+                    ->update(array('estado' => 3)); // 3 : eliminado permanente
             //restriccion de quiebres
             DB::table('quiebre_usuario_restringido')
                     ->where('usuario_id', $usuarioId)
@@ -641,13 +643,29 @@ class UsuarioController extends BaseController
             if ($estado == 0) {
                 DB::table('empresa_usuario')
                         ->where('usuario_id', Input::get('id'))
+                        ->where('estado','<>', 3)
                         ->update(array('estado' => 0));
                 DB::table('submodulo_usuario')
                         ->where('usuario_id', Input::get('id'))
+                        ->where('estado','<>', 3)
                         ->update(array('estado' => 0));
                 DB::table('quiebre_grupo_usuario')
                         ->where('usuario_id', Input::get('id'))
+                        ->where('estado','<>', 3)
                         ->update(array('estado' => 0));
+            } elseif ($estado == 1){
+                DB::table('empresa_usuario')
+                        ->where('usuario_id', Input::get('id'))
+                        ->where('estado','<>', 3)
+                        ->update(array('estado' => 1));
+                DB::table('submodulo_usuario')
+                        ->where('usuario_id', Input::get('id'))
+                        ->where('estado','<>', 3)
+                        ->update(array('estado' => 1));
+                DB::table('quiebre_grupo_usuario')
+                        ->where('usuario_id', Input::get('id'))
+                        ->where('estado','<>', 3)
+                        ->update(array('estado' => 1));
             }
             return Response::json(
                 array(

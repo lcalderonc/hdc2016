@@ -13,15 +13,15 @@ $(document).ready(function() {
         var modal = $(this);
         modal.find('.modal-title').text(titulo+' Celula');
         $('#form_celulas [data-toggle="tooltip"]').css("display","none");
-        $("#form_celulas input[type='hidden']").remove();
+//        $("#form_celulas input[type='hidden']").remove();
 
         if(titulo=='Nuevo') {
             slctGlobal.listarSlct('quiebre','slct_quiebres','multiple',null,null);
-
             modal.find('.modal-footer .btn-primary').text('Guardar');
             modal.find('.modal-footer .btn-primary').attr('onClick','Agregar();');
             $('#form_celulas #slct_estado').val(1);
             $('#form_celulas #txt_nombre').focus();
+            $('#form_celulas #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else {
             var data = {'celula_id':celulaObj[celula_id].id};
@@ -33,11 +33,11 @@ $(document).ready(function() {
             $('#slct_zonal').multiselect('rebuild');
             $('#slct_empresa').multiselect('select', empresa_id);
             $('#slct_empresa').multiselect('rebuild');
-
             modal.find('.modal-footer .btn-primary').text('Actualizar');
             modal.find('.modal-footer .btn-primary').attr('onClick','Editar();');
             $('#form_celulas #txt_nombre').val( celulaObj[celula_id].nombre );
             $('#form_celulas #txt_responsable').val( celulaObj[celula_id].responsable );
+            $('#form_celulas #txt_token').val("<?php echo Session::get('s_token');?>");
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {
                 $('#form_celulas .n_estado').remove();

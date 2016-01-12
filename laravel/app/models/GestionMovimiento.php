@@ -447,10 +447,13 @@ class GestionMovimiento extends Eloquent
                             ),
                             ""
                     ) AS fecha_cambio '.$campoAdic.', gd.fftt
-                    , gd.estado_legado, gd.fec_liq_legado 
+                    , gd.estado_legado, gd.fec_liq_legado, eo.nombre as estado_ofsc,
+                    gm.aid as aid,
+                    gm.envio_ofsc as envio_ofsc
                     FROM gestiones g
                     INNER JOIN gestiones_detalles gd ON g.id=gd.gestion_id
                     INNER JOIN gestiones_movimientos gm ON g.id=gm.gestion_id
+                    LEFT JOIN estados_ofsc eo on eo.id=gm.estado_ofsc_id
                     INNER JOIN actividades a ON a.id=g.actividad_id
                     INNER JOIN quiebres q ON q.id=gd.quiebre_id
                     INNER JOIN empresas e ON e.id=gm.empresa_id

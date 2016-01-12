@@ -162,7 +162,10 @@ IniciarOfsc=function(){
 UpdateOfsc=function(){
     datos = {
                 aid: $("#txt_aid_modal").val(),
-                direccion: $("#txt_direccion_update_toa_modal").val()
+                direccion: $("#txt_direccion_update_toa_modal").val(),
+                telefono: $("#txt_telefono").val(),
+                coord_x: $("#txt_x_modal2").val(),
+                coord_y: $("#txt_y_modal2").val()
             };
     OFSC.UpdateOfsc(Limpiar,datos);
 };
@@ -470,13 +473,19 @@ envioMensaje=function(pos){
     });
 };
 
-function SetXY(x, y) {
-    $("#txt_x_modal").val(x);
-    $("#txt_y_modal").val(y);
+function SetXY(x, y, cond) {
+    if(cond == 1) {
+        var num = '';
+    } else {
+        var num = '2';
+    }
+    $("#txt_x_modal"+num).val(x);
+    $("#txt_y_modal"+num).val(y);
 }
 
-function initializeMapModal(coord_x, coord_y) {
+function initializeMapModal(coord_x, coord_y, cond) {
     $(".map").css("display","");
+
     if ($.trim(coord_x) === '') {
         coord_x = -77.0427934;
     }
@@ -485,14 +494,20 @@ function initializeMapModal(coord_x, coord_y) {
         coord_y = -12.046374;
     }
 
-    $("#txt_x_modal").val(coord_x);
-    $("#txt_y_modal").val(coord_y);
+    if(cond == 1) {
+        var num = '';
+    } else {
+        var num = '2';        
+    }
+
+    $("#txt_x_modal"+num).val(coord_x);
+    $("#txt_y_modal"+num).val(coord_y);
 
     var latitud = coord_y;
     var longitud = coord_x;
 
     var myLatlng = new google.maps.LatLng(coord_y, coord_x);
-    var map = new google.maps.Map(document.getElementById('map_canvas'), {
+    var map = new google.maps.Map(document.getElementById('map_canvas'+num), {
         zoom: 16,
         center: myLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -508,14 +523,14 @@ function initializeMapModal(coord_x, coord_y) {
     markers.push(marker);
 
     //Street view
-    initStreetView(coord_y, coord_x, 'street_canvas', map, marker);
+    initStreetView(coord_y, coord_x, 'street_canvas'+num, map, marker,cond);
 
     google.maps.event.addListener(map, 'click', function(evento) {
 
         latitud = evento.latLng.lat();
         longitud = evento.latLng.lng();
 
-        SetXY(longitud, latitud);
+        SetXY(longitud, latitud, cond);
         for (var i = 0, marker; marker = markers[i]; i++) {
             marker.setMap(null);
         }
@@ -531,17 +546,17 @@ function initializeMapModal(coord_x, coord_y) {
         markers.push(marker);
 
         //Street view
-        initStreetView(latitud, longitud, 'street_canvas', map, marker);
+        initStreetView(latitud, longitud, 'street_canvas'+num, map, marker, cond);
 
     });
 
     google.maps.event.addListener(marker, 'click', function() {
         var markerLatLng = marker.getPosition();
-        SetXY(markerLatLng.lng(), markerLatLng.lat());
+        SetXY(markerLatLng.lng(), markerLatLng.lat(), cond);
     });
     google.maps.event.addListener(marker, 'dragend', function() {
         var markerLatLng = marker.getPosition();
-        SetXY(markerLatLng.lng(), markerLatLng.lat());
+        SetXY(markerLatLng.lng(), markerLatLng.lat(), cond);
     });
     $(".map").css("display","none");
 
@@ -549,12 +564,17 @@ function initializeMapModal(coord_x, coord_y) {
 
 /**
  * Inicializa Google Street View
- *
+ * cond: determina si es mapa de GESTION o ACTUALIZAR
  * @returns {undefined}
  * */
-function initStreetView(lat, lng, item, map, marker) {
+function initStreetView(lat, lng, item, map, marker, cond) {
     var fenway = new google.maps.LatLng(lat, lng);
 
+    if(cond == 1) {
+        var num = '';
+    } else {
+        var num = '2';
+    }
     // Note: constructed panorama objects have visible: true
     // set by default.
     var panoOptions = {
@@ -574,8 +594,8 @@ function initStreetView(lat, lng, item, map, marker) {
             document.getElementById(item), panoOptions);
 
     google.maps.event.addListener(panorama, 'position_changed', function() {
-        $("#txt_x_modal").val(panorama.getPosition().lng());
-        $("#txt_y_modal").val(panorama.getPosition().lat());
+        $("#txt_x_modal"+num).val(panorama.getPosition().lng());
+        $("#txt_y_modal"+num).val(panorama.getPosition().lat());
 
         if (typeof marker == 'object')
         {
@@ -590,6 +610,7 @@ function initStreetView(lat, lng, item, map, marker) {
         }
     });
 }
+
 
 function format ( datos ) {
     // `d` is the original data object for the row
@@ -970,6 +991,11 @@ listarDataModal=function(objnuev,obj){
         $("#txt_estado_update_toa_modal").val(obj[0].estado);
         $("#txt_quiebre_update_toa_modal").val(obj[0].quiebre);
         $("#txt_direccion_update_toa_modal").val(obj[0].direccion_instalacion);
+        $("#txt_telefono").val(obj[0].telefono_cliente_critico);
+
+        $("#txt_x_modal2").val(obj[0].coord_x);
+        $("#txt_y_modal2").val(obj[0].coord_y);
+      //  initializeMapModal(obj[0].coord_x, obj[0].coord_y, 2);
 
         var estado_ofsc_id='';
         estado_ofsc_id= obj[0].estado_ofsc_id;
@@ -1266,7 +1292,8 @@ eventoSlctGlobalSimple=function(slct,valores){ // este evento "eventoSlctGlobalS
         }
     }
 
-    initializeMapModal(cliente_x, cliente_y);
+    initializeMapModal(cliente_x, cliente_y,1);
+    initializeMapModal(cliente_x, cliente_y,2);
 };
 
 gestionModal=function(){

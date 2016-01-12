@@ -14,7 +14,8 @@
 	"autoload": {
 		"psr-4": {
 			"Ofsc\\": "app/Ofsc",
-			"TestCapacity\\":"app/TestCapacity"
+			"TestCapacity\\":"app/TestCapacity",
+			"ClassOT\\": "app/ClassOT"
 		},
 		"classmap": [
 			"app/commands",
@@ -22,7 +23,6 @@
 			"app/models",
 			"app/database/migrations",
 			"app/database/seeds",
-			"app/tests/TestCase.php",
 			"app/libraries"
 		]
 	},

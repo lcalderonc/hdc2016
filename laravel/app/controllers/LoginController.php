@@ -45,6 +45,8 @@ class LoginController extends BaseController
                 Session::set('menu', $menu);
                 Session::set('accesos', $accesos);
                 Session::set('perfilId', $usuario['perfil_id']);
+                
+                Session::set("s_token", md5(uniqid(mt_rand(), true)));
 
                 Lang::setLocale(Session::get('language_id'));
 

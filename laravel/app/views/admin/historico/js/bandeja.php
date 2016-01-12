@@ -47,7 +47,8 @@ $(document).ready(function() {
     var ids = []; //para seleccionar un id
     var data = {usuario: 1};
     slctGlobal.listarSlct('actividad','slct_actividad','multiple');
-    slctGlobal.listarSlct('actividadtipo','slct_actividad_tipo','multiple');
+    //slctGlobal.listarSlct('actividadtipo','slct_actividad_tipo','multiple');
+    slctGlobal.listarSlct('estadoofsc','slct_estado_ofsc','multiple');
     slctGlobal.listarSlct('estado','slct_estado','multiple');
     slctGlobal.listarSlct('quiebre','slct_quiebre','multiple',ids,data);
     slctGlobal.listarSlct('empresa','slct_empresa','multiple',ids,data,0,'#slct_celula,#slct_tecnico','E');
@@ -144,6 +145,7 @@ var officetrackbotton="";
         "<td>"+data.mdf+"</td>"+
         "<td>"+data.fh_agenda+"</td>"+
         "<td>"+data.tecnico+"</td>"+
+        "<td>"+data.estado_ofsc+"</td>"+
         "<td>"+data.estado+"<br><font color='#327CA7'>"+data.cierre_estado+"</font></td>";
 
         officetrackColor='';officetrackImage='';officetrackbotton='';

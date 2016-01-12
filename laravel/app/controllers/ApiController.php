@@ -2,13 +2,13 @@
 
 class ApiController extends \BaseController
 {
-    protected $_OfficetrackController;
+    protected $_officetrackController;
     protected $_errorController;
 
-    public function __construct(OfficetrackController $OfficetrackController)
+    public function __construct(OfficetrackController $officetrackController)
     {
         //$this->beforeFilter('auth');
-        $this->_OfficetrackController = $OfficetrackController ;
+        $this->_officetrackController = $officetrackController ;
         //$this->_errorController = $ErrorController;
     }
     /**
@@ -243,7 +243,7 @@ class ApiController extends \BaseController
             
             $resultado = array();
 
-            $sql="  SELECT DISTINCT(e.tipo_evento) as evento
+            $sql="SELECT DISTINCT(e.tipo_evento) as evento
                     FROM eventos e
                     LEFT JOIN evento_consulta ec ON ec.id=e.`evento_id` 
                           AND e.`tipo_evento`=1
@@ -256,19 +256,17 @@ class ApiController extends \BaseController
                           AND e.tipo_persona=1
                           AND u.estado=1
                     WHERE  (t.celular=? OR u.celular=? )
-                    AND ec.id IS NOT NULL AND e.estado=1 ";
-            $datos=DB::select($sql,array($telefono,$telefono));
-            if ( count($datos)>0 ) {
-                if ( $datos[0]->evento==1 ) {
-                    $array = Helpers::ruta(
-                        'api/getactuaux', 'POST', Input::all(), false
-                    );
-                    if ($array->rst==1) {
-                        $resultado[] = $array->datos;
-                    }
+                    AND ec.id IS NOT NULL AND e.estado=1";
+            $datos=DB::select($sql, array($telefono,$telefono));
+            if ( isset($datos[0]->evento) && $datos[0]->evento==1 ) {
+                $array = Helpers::ruta(
+                    'api/getactuaux', 'POST', Input::all(), false
+                );
+                if (isset($array->rst) && $array->rst==1) {
+                    $resultado[] = $array->datos;
                 }
             }
-            $sql ="  SELECT e.tipo_evento as evento, em.metodo, em.nombre
+            $sql ="SELECT e.tipo_evento as evento, em.metodo, em.nombre
                     FROM eventos e
                     LEFT JOIN evento_metodo em ON em.id=e.`evento_id` 
                           AND e.`tipo_evento`=2 AND em.`consulta`= 1
@@ -281,8 +279,8 @@ class ApiController extends \BaseController
                           AND e.tipo_persona=1
                           AND u.estado=1
                     WHERE  (t.celular=? OR u.celular=? )
-                    AND em.id IS NOT NULL AND e.estado=1 ";
-            $datos=DB::select($sql,array($telefono,$telefono));
+                    AND em.id IS NOT NULL AND e.estado=1";
+            $datos=DB::select($sql, array($telefono,$telefono));
             foreach ($datos as $data) {
                 $inputDos = $input = Input::all();
                 $input['nombreevento'] = $data->nombre;
@@ -300,18 +298,18 @@ class ApiController extends \BaseController
                     array(
                         'rst'=>1,
                         'datos'=> '',
-                        'msj'=>'Ud no cuenta con permisos.',
+                        'msj'=>'Ud. No cuenta con permisos.',
                     )
                 );
             }
         } else {
             return Response::json(
-                    array(
-                        'rst'=>1,
-                        'datos'=> '',
-                        'msj'=>"Ud debe ingresar elefono 'telefonoOrigen'",
-                    )
-                );
+                array(
+                    'rst'=>1,
+                    'datos'=> '',
+                    'msj'=>"Ud. Debe ingresar telefono 'telefonoOrigen'",
+                )
+            );
         }
 
     }
@@ -324,7 +322,9 @@ class ApiController extends \BaseController
             //enviar a celular
             $datos = json_encode($r['datos']);
             //strlen($datos)/140 +1;
-            $datos=str_replace(array('[',']','{','}',':','"',"'"), array('','','','','=','',''), $datos);
+            $cadenaBase = array('[',']','{','}',':','"',"'");
+            $cadenaReemplezar = array('','','','','=','','');
+            $datos=str_replace($cadenaBase, $cadenaReemplezar, $datos);
             $contador = ceil(strlen($datos)/135);
 
             Sms::enviar($telefonoOrigen, $r['msj'], '397');
@@ -345,8 +345,8 @@ class ApiController extends \BaseController
                 array(
                     'rst'=>1,
                     'datos'=> '',
-                    'msj'=>'No se encontraron registros, verifique su '.
-                    'dato ingresado e intente nuevamente.',
+                    'msj'=>'No se encontraron registros, verifique los '.
+                    'datos ingresados e intente nuevamente.',
                 )
             );
         }
@@ -383,7 +383,7 @@ class ApiController extends \BaseController
     public function postEventometodo()
     {
         if (Input::has('telefonoOrigen') && Input::has('nombreevento')) {
-            $r='';
+            $r=array();
             $nombre=Input::get('nombreevento');
             $telefono=Input::get('telefonoOrigen');
             if ($nombre=='bandeja') {
@@ -392,7 +392,6 @@ class ApiController extends \BaseController
                 } else {
                     $r="debe ingresar 'buscar' y 'tipo'";
                 }
-
             } elseif ($nombre=='activacion' || $nombre=='refresh') {
                 $r= Api::eventoMetodo($nombre, $telefono);
             } elseif ($nombre=='consulta') {
@@ -402,8 +401,8 @@ class ApiController extends \BaseController
             } else {
                 $r= Api::eventoMetodo($nombre, $telefono);
             }
-
-            if ( isset($r['msj']) ) {
+            
+            if ( isset($r['msj']) && $r['msj'] != '' ) {
                 Sms::enviar($telefono, $r['msj'], '397');
             }
             return Response::json($r);
@@ -412,7 +411,8 @@ class ApiController extends \BaseController
                 array(
                     "rst"=> 1,
                     "datos"=> "",
-                    "msj"=> "Usted debe ingresar nombre del evento 'nombreevento'",
+                    "msj"=> "Ud. Debe ingresar nombre del evento "
+                    . "'nombreevento' y telefono 'telefonoOrigen'",
                 )
             );
         }
@@ -427,12 +427,14 @@ class ApiController extends \BaseController
             }
             return Response::json($r);
         } else {
-            Sms::enviar(Input::get('telefonoOrigen'), 'no ingreso telefono o nombre evento', '397');
+            Sms::enviar(Input::get('telefonoOrigen'), 'no ingreso telefono o 
+            nombre evento', '397');
             return Response::json(
                 array(
                     "rst"=> 1,
                     "datos"=> "",
-                    "msj"=> "Usted debe ingresar un telefono 'telefonoOrigen' y el nombre del evento 'nombreevento'",
+                    "msj"=> "Usted debe ingresar un telefono 'telefonoOrigen' 
+                    y el nombre del evento 'nombreevento'",
                 )
             );
         }*/
@@ -578,14 +580,14 @@ class ApiController extends \BaseController
             );
 
             $tecnico = Tecnico::where('carnet_tmp', '=', $carnet)->first();
-            $tecnico_id = $tecnico->id;
+            $tecnicoId = $tecnico->id;
             //INSERT en cambios_direcciones
             $sql = "INSERT INTO cambios_direcciones
                    (gestion_id, tipo_usuario, usuario_id,
                    coord_x, coord_y, direccion, referencia, created_at)
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $data = array(
-                $gestionId, 'tec', $tecnico_id,
+                $gestionId, 'tec', $tecnicoId,
                 $x, $y, $direccion, $referencia,
                 $fechaHora
             );

@@ -14,7 +14,7 @@ class Api extends Eloquent
         $id=Input::get('id', '');//id de la tarea
         $sql ="UPDATE tareas SET procesado=? WHERE id=?";
         try {
-            DB::update($sql,array($procesado,$id));
+            DB::update($sql, array($procesado,$id));
         } catch (Exception $e) {
             
         }
@@ -22,9 +22,10 @@ class Api extends Eloquent
         $msj="";
         $telefono=Input::get('telefono', '');
         //$idConsulta=Input::get('idConsulta', '');
-        $idConsulta = date('YmdHis');     // Debe enviar una fecha en este formato
+        $idConsulta = date('YmdHis'); // Debe enviar una fecha en este formato
      
-        $url = "http://10.226.88.214/WSASSIA/wsASSIA.php/RegistrarDiagnostico/".$telefono."/".$idConsulta;
+        $url = "http://10.226.88.214/WSASSIA/wsASSIA.php/RegistrarDiagnostico/"
+                .$telefono."/".$idConsulta;
         try {
             $ch = curl_init();
             if (FALSE === $ch)
@@ -49,7 +50,8 @@ class Api extends Eloquent
                 E_USER_ERROR
             );
         }
-        //$result = json_decode('[{"id":16,"Desc":"No se obtiene respuesta. Revisar linea o modem","Tel":"12421836","Ok":0}]');
+        //$result = json_decode('[{"id":16,"Desc":"No se obtiene respuesta. 
+        //Revisar linea o modem","Tel":"12421836","Ok":0}]');
         
         if (count($result)>0) {
             $id = $result[0]->id;
@@ -64,7 +66,7 @@ class Api extends Eloquent
             $procesado=1;
 
             try {
-                DB::update($sql,array($procesado,$id));
+                DB::update($sql, array($procesado,$id));
             } catch (Exception $e) {
                 
             }
@@ -102,7 +104,8 @@ class Api extends Eloquent
             $xml->save('prueba.xml');
             $xmlObj = simplexml_load_string($xmlTest);
 
-            $msj = "N: ".$telefono.", Prueba Dslam: velocidad subida->".$xmlObj->PruebaDslam->VelocidadActualSubida->Descripcion;
+            $msj = "N: ".$telefono.", Prueba Dslam: velocidad subida->".
+                    $xmlObj->PruebaDslam->VelocidadActualSubida->Descripcion;
             $rst=1;
         }
         return
@@ -137,8 +140,8 @@ class Api extends Eloquent
                         AND ep.tipo_evento=1
                         AND (t.celular=? OR u.celular=? )
                         ORDER BY orden";
-
-        $qpermisos= DB::select($sqlpermisos, array($telefonoOrigen,$telefonoOrigen));
+        $parpermisos = array($telefonoOrigen,$telefonoOrigen);
+        $qpermisos= DB::select($sqlpermisos, $parpermisos);
         $array=array();
         $arrayDep=array();
         if ( count($qpermisos)>0 ) {
@@ -226,7 +229,7 @@ class Api extends Eloquent
                                 for ($i=0;$i<count($extraer);$i++) {
                                     //$arrayDep= array();
 
-                                    $variable=$extraer[$i]; //var_dump($variable);
+                                    $variable=$extraer[$i];
                                     //$arrayDep[$variable] = $variable ;
                                     eval("\$arrayDep[\$variable] = \$result[0]->$variable;");
                                 }
@@ -249,14 +252,15 @@ class Api extends Eloquent
                 array(
                 'rst'=>1,
                 'datos'=> $data,
-                'msj'=>'Se envio el resultado por mensaje de texto a su celular.',
+                'msj'=>'Se envio el resultado por mensaje de texto '
+                    . 'a su celular.',
                 );
         } else {
             return
                 array(
                     'rst'=>2,
                     'datos'=> '',
-                    'msj'=> 'Ud no cuenta con permisos para consultar.',
+                    'msj'=> 'Ud. No cuenta con permisos para consultar.',
                 );
         }
     }
@@ -350,7 +354,6 @@ class Api extends Eloquent
      */
     public static function eventoMetodo($nombre,$telefono)
     {
-        $result= array();
         $data=array();
 
         $sqlpermisos = "SELECT  e.nombre,e.metodo, ep.tipo_persona AS tipo,
@@ -372,14 +375,15 @@ class Api extends Eloquent
                         AND e.nombre=?
                         AND (t.celular=? OR u.celular=? )";
         //tipo_evento=2, solo metodos
-        $qpermisos=DB::select($sqlpermisos, array($nombre,$telefono,$telefono ));
+        $qpermisos=DB::select($sqlpermisos, array($nombre,$telefono,$telefono));
 
-        if ( count($qpermisos)>0 ) {
+        if (isset($qpermisos[0]->metodo)) {
             $metodo=$qpermisos[0]->metodo;
             $tipo=$qpermisos[0]->tipo;
             $data = Input::all();
             $data['tipo']=$tipo;
             Input::replace($data);
+            //print_r($qpermisos[0]);print_r($data);exit;
             $rst = eval("\$data = $metodo;");
             //$data['msj'] = "Se ejecuto la accion($nombre) ";
             /*if (isset($data['rst'])) {
@@ -398,7 +402,8 @@ class Api extends Eloquent
                 array(
                     'rst'=>1,
                     'datos'=> '',
-                    'msj'=>"Ud. No cuenta con permisos para realizar esta accion ($nombre)",
+                    'msj'=>"Ud. No cuenta con permisos para realizar esta "
+                    . "accion ($nombre)",
                 );
         }
     }
@@ -502,7 +507,7 @@ class Api extends Eloquent
     public static function getAveriaLiqBasProv( $array= array() )
     {
         $result= array();
-        //2 Aver. Liq. TBA Provincia (schedulle_sistemas.aver_liq_bas_prov_pedidos)
+        //2 Aver.Liq.TBA Provincia(schedulle_sistemas.aver_liq_bas_prov_pedidos)
         $sql = "SELECT telefono, ape_paterno AS appater, ape_materno AS apmater,
                 nombre, inscripcion AS inscripcio, mdf, direccion_instalacion
                 AS direccion, '' AS armario, '' AS cable, '' AS terminal,
@@ -698,10 +703,13 @@ class Api extends Eloquent
     {
         $result= array();
         //12. Prov. Pen. CATV (schedulle_sistemas.prov_pen_catv_pais)
-        $sql = "SELECT apellido_paterno AS appater, apellido_materno AS apmater, nombres AS nombre,
-                CONCAT(tipo_de_via,' ',nombre_de_la_via,' ',numero,' Piso: ',piso,
+        $sql = "SELECT apellido_paterno AS appater, apellido_materno AS apmater,
+                nombres AS nombre,
+                CONCAT(tipo_de_via,' ',nombre_de_la_via,' ',numero,' Piso: ',
+                piso,
                 ' Int: ',interior, ' Mzn: ',manzana,' Lt: ',lote) AS direccion,
-                nodo, plano,lex,tap,borne, codigo_req, fecha_registro, codigo_del_cliente AS codclie
+                nodo, plano,lex,tap,borne, codigo_req, fecha_registro,
+                codigo_del_cliente AS codclie
                 FROM schedulle_sistemas.prov_pen_catv_pais
                 WHERE codigo_del_cliente=? ";
 
@@ -759,7 +767,8 @@ class Api extends Eloquent
         //15. Maestro FFTT Secundaria (webunificada_fftt.fftt_secundaria)
         $sql = "SELECT Pardistribuidor as par, Caja, Inscripcion,
                 Solicitud, EstadoPar, Negocio, Zonal, Ciudad, DescCiudad, MDF,
-                DescMDF,Armario, Bloque,  Telefono, Circuito, DDN, Direccion, Cliente,
+                DescMDF,Armario, Bloque,  Telefono, Circuito, DDN, Direccion, 
+                Cliente,
                 posicionAdslGestel, segmentoGestel, sectorGestel, manzanaGestel,
                 velocidadBajadaGestel, velocidadSubidaGestel,
                 descripcionModalidadGestel, fecha_insert,X,Y

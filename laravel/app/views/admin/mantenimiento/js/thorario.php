@@ -10,22 +10,24 @@ $(document).ready(function() {
       var modal = $(this); //captura el modal
       modal.find('.modal-title').text(titulo+' Tipo Horario');
       $('#form_thorarios [data-toggle="tooltip"]').css("display","none");
-      $("#form_thorarios input[type='hidden']").remove();
+//      $("#form_thorarios input[type='hidden']").remove();
 
         if(titulo=='Nuevo'){
             modal.find('.modal-footer .btn-primary').text('Guardar');
             modal.find('.modal-footer .btn-primary').attr('onClick','Agregar();');
             $('#form_thorarios #slct_estado').val(1); 
-			$('#form_thorarios #txt_nombre').focus();
+            $('#form_thorarios #txt_nombre').focus();
             $('#form_thorarios #txt_minutos');
             $('#form_thorarios #slct_estado').show();
             $('#form_thorarios .n_estado').remove();
+            $('#form_thorarios #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else{
             modal.find('.modal-footer .btn-primary').text('Actualizar');
             modal.find('.modal-footer .btn-primary').attr('onClick','Editar();');
             $('#form_thorarios #txt_nombre').val( $('#t_thorarios #nombre_'+button.data('id') ).text() );
-			$('#form_thorarios #txt_minutos').val( $('#t_thorarios #minutos_'+button.data('id') ).text() );
+            $('#form_thorarios #txt_minutos').val( $('#t_thorarios #minutos_'+button.data('id') ).text() );
+            $('#form_thorarios #txt_token').val("<?php echo Session::get('s_token');?>");
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {
                 $('#form_thorarios .n_estado').remove();

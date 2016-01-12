@@ -3574,4 +3574,8 @@ td.details-control {
 tr.shown td.details-control {
     background: url('../../img/admin/datatable/details_close.png') no-repeat top right;
 }
-
+/* ========
+   CUSTOM
+   ======== */
+.resize-vertical{resize: vertical;}
+.resize-none{resize: none;}

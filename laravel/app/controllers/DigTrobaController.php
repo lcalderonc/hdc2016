@@ -11,6 +11,7 @@ class DigTrobaController extends BaseController
     {
         $this->beforeFilter('auth');
         $this->_errorController = $ErrorController;
+        $this->beforeFilter('csrf_token', ['only' => ['postCrear', 'postEditar']]);
     }
 
     /**

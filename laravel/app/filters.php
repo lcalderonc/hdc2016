@@ -78,3 +78,15 @@ Route::filter(
     }
 );
 
+Route::filter(
+    'csrf_token', function () {
+        if (Input::has('token')) {
+            if (Session::get('s_token') !== Input::get('token')) {
+                die('Token NO Valido... !!!');
+            }
+        } else {
+            die('Token NO Existente... !!!');
+        }
+    }
+);
+

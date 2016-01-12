@@ -2,6 +2,10 @@
 
 class EmpresaController extends \BaseController
 {
+    public function __construct() 
+    {
+        $this->beforeFilter('csrf_token', ['only' => ['postCrear', 'postEditar']]);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -12,11 +16,11 @@ class EmpresaController extends \BaseController
     public function postCargar()
     {
         //si la peticion es ajax
-        if ( Request::ajax() ) {
-            $empresas=    DB::table('empresas')
-                        ->select('id', 'nombre', 'estado', 'es_ec')
-                        ->get();
-            return Response::json(array('rst'=>1,'datos'=>$empresas));
+        if (Request::ajax()) {
+            $empresas = DB::table('empresas')
+                    ->select('id', 'nombre', 'estado', 'es_ec')
+                    ->get();
+            return Response::json(array('rst' => 1, 'datos' => $empresas));
         }
     }
 
@@ -29,93 +33,84 @@ class EmpresaController extends \BaseController
     public function postListar()
     {
         //si la peticion es ajax
-        if ( Request::ajax() ) {
-            if ( Input::get('usuario')=='1' ) {
-                $empresas=  DB::table('empresas as e')
-                            ->join(
-                                'empresa_usuario as eu', 
-                                function($join)
-                                {
-                                    $join->on(
-                                        'e.id',
-                                        '=',
-                                        'eu.empresa_id'
-                                    )
-                                    ->where(
-                                        'eu.usuario_id',
-                                        '=',
-                                        Auth::user()->id
-                                    )
-                                    ->where(
-                                        'eu.estado',
-                                        '=',
-                                        '1'
-                                    );
-                                }
+        if (Request::ajax()) {
+            if (Input::get('usuario') == '1') {
+                $empresas = DB::table('empresas as e')
+                        ->join(
+                            'empresa_usuario as eu', function($join) {
+                            $join->on('e.id', '=', 'eu.empresa_id')
+                            ->where('eu.usuario_id', '=', Auth::user()->id)
+                            ->where('eu.estado', '=', '1');
+                            }
+                        )
+                        ->select(
+                            'e.id', 'e.nombre', 'e.es_ec', DB::raw(
+                                'IFNULL(eu.estado,"disabled") as block'
                             )
-                            ->select(
-                                'e.id',
-                                'e.nombre',
-                                'e.es_ec',
-                                DB::raw(
-                                    'IFNULL(eu.estado,"disabled") as block'
-                                )
-                            )
-                            ->where('e.estado', '=', '1')
-                            ->orderBy('e.nombre')
-                            ->get();
+                        )
+                        ->where('e.estado', '=', '1')
+                        ->orderBy('e.nombre')
+                        ->get();
             } elseif (Input::has('usuario_id')) {
-                $usuarioId = Input::get('usuario_id');
-                $usuarioSesion= Auth::user()->id;
+//                $usuarioId = Input::get('usuario_id');
+                $usuarioSesion = Auth::user()->id;
                 //$perfilId = Session::get('perfilId');
                 $usuario = Usuario::find(Auth::user()->id);
-                $perfilId=$usuario['perfil_id'];
-                /*$empresas = DB::table('empresas as e')
-                    ->leftJoin(
-                    'empresa_usuario as eu', function($join) use ($usuarioId)
-                        {
-                        $join->on('e.id', '=', 'eu.empresa_id')
-                        ->on('eu.usuario_id', '=', DB::raw($usuarioId));
-                        }
-                    )
-                    ->select('e.id', 'e.nombre', 'eu.estado')
-                    ->where('e.estado', '=', 1)
-                    ->get();*/
+                $perfilId = $usuario['perfil_id'];
+                /* $empresas = DB::table('empresas as e')
+                  ->leftJoin(
+                  'empresa_usuario as eu', function($join) use ($usuarioId)
+                  {
+                  $join->on('e.id', '=', 'eu.empresa_id')
+                  ->on('eu.usuario_id', '=', DB::raw($usuarioId));
+                  }
+                  )
+                  ->select('e.id', 'e.nombre', 'eu.estado')
+                  ->where('e.estado', '=', 1)
+                  ->get(); */
                 $query = "SELECT e.id, e.nombre, 
-                            (SELECT estado 
+                            IFNULL((SELECT estado 
                             FROM empresa_usuario 
                             WHERE usuario_id=? AND estado=1
                             AND empresa_id=e.id
-                            GROUP BY empresa_id ) AS estado
+                            GROUP BY empresa_id),0) AS estado
                         FROM empresas e ";
 
-                if ($perfilId=='8') {//super user
+                if ($perfilId == '8') {//super user
                     $query.=" WHERE e.estado=1 ORDER BY e.nombre";
-                    $empresas= DB::select(
-                        $query, 
-                        array($usuarioId)
-                    );
-                } else {
-                    $query.="JOIN empresa_usuario eu 
+                    $arrParamEmpresas = array($usuarioSesion);
+                } else { // $usuarioId
+                    $query.=" JOIN empresa_usuario eu 
                             ON e.id=eu.empresa_id
-                            WHERE eu.estado=1 AND e.estado=1 AND eu.usuario_id=?
+                            WHERE e.estado=1 AND eu.estado=1 AND eu.usuario_id=?
                             ORDER BY e.nombre";
-                    $empresas= DB::select(
-                        $query, 
-                        array($usuarioId,$usuarioSesion)
-                    );
-                }
+                $arrParamEmpresas = array($usuarioSesion, $usuarioSesion);
+                } // $usuarioId, $usuarioSesion
+                $empresas = DB::select($query, $arrParamEmpresas);
             } else {
-                $empresas=  DB::table('empresas')
-                            ->select('id', 'nombre')
-                            ->where('estado', '=', '1')
-                            ->orderBy('nombre')
-                            ->get();
+                $empresas = DB::table('empresas as e')
+                        ->join(
+                            'empresa_usuario as eu', function($join) {
+                            $join->on('e.id', '=', 'eu.empresa_id')
+                            ->where('eu.usuario_id', '=', Auth::user()->id)
+                            ->where('eu.estado', '=', '1');
+                            }
+                        )
+                        ->select('e.id', 'e.nombre', 'eu.estado')
+                        ->where('e.estado', '=', '1')
+                        ->orderBy('e.nombre')
+                        ->get();
             }
-            return Response::json(array('rst'=>1,'datos'=>$empresas));
+            return Response::json(
+                array(
+                        'rst' => 1, 
+                        'datos' => $empresas, 
+//                        'query' => $query
+                    )
+            );
         }
     }
-    
+
     /**
      * Store a newly created resource in storage.
      * POST /empresa/crear
@@ -125,25 +120,25 @@ class EmpresaController extends \BaseController
     public function postCrear()
     {
         //si la peticion es ajax
-        if ( Request::ajax() ) {
-            $regex='regex:/^([a-zA-Z .,ñÑÁÉÍÓÚáéíóú]{2,60})$/i';
-            $required='required';
+        if (Request::ajax()) {
+            $regex = 'regex:/^([a-zA-Z .,ñÑÁÉÍÓÚáéíóú]{2,60})$/i';
+            $required = 'required';
             $reglas = array(
-                'nombre' => $required.'|'.$regex,
+                'nombre' => $required . '|' . $regex,
             );
 
-            $mensaje= array(
-                'required'    => ':attribute Es requerido',
-                'regex'        => ':attribute Solo debe ser Texto',
+            $mensaje = array(
+                'required' => ':attribute Es requerido',
+                'regex' => ':attribute Solo debe ser Texto',
             );
 
             $validator = Validator::make(Input::all(), $reglas, $mensaje);
 
-            if ( $validator->fails() ) {
+            if ($validator->fails()) {
                 return Response::json(
                     array(
-                    'rst'=>2,
-                    'msj'=>$validator->messages(),
+                        'rst' => 2,
+                        'msj' => $validator->messages(),
                     )
                 );
             }
@@ -156,8 +151,8 @@ class EmpresaController extends \BaseController
 
             return Response::json(
                 array(
-                'rst'=>1,
-                'msj'=>'Registro realizado correctamente',
+                    'rst' => 1,
+                    'msj' => 'Registro realizado correctamente',
                 )
             );
         }
@@ -171,29 +166,29 @@ class EmpresaController extends \BaseController
      */
     public function postEditar()
     {
-        if ( Request::ajax() ) {
-            $regex='regex:/^([a-zA-Z .,ñÑÁÉÍÓÚáéíóú]{2,60})$/i';
-            $required='required';
+        if (Request::ajax()) {
+            $regex = 'regex:/^([a-zA-Z .,ñÑÁÉÍÓÚáéíóú]{2,60})$/i';
+            $required = 'required';
             $reglas = array(
-                'nombre' => $required.'|'.$regex,
+                'nombre' => $required . '|' . $regex,
             );
 
-            $mensaje= array(
-                'required'    => ':attribute Es requerido',
-                'regex'        => ':attribute Solo debe ser Texto',
+            $mensaje = array(
+                'required' => ':attribute Es requerido',
+                'regex' => ':attribute Solo debe ser Texto',
             );
 
             $validator = Validator::make(Input::all(), $reglas, $mensaje);
 
-            if ( $validator->fails() ) {
+            if ($validator->fails()) {
                 return Response::json(
                     array(
-                    'rst'=>2,
-                    'msj'=>$validator->messages(),
+                        'rst' => 2,
+                        'msj' => $validator->messages(),
                     )
                 );
             }
-            
+
             $empresas = Empresa::find(Input::get('id'));
             $empresas['nombre'] = Input::get('nombre');
             $empresas['es_ec'] = Input::get('es_ec');
@@ -202,8 +197,8 @@ class EmpresaController extends \BaseController
 
             return Response::json(
                 array(
-                'rst'=>1,
-                'msj'=>'Registro actualizado correctamente',
+                    'rst' => 1,
+                    'msj' => 'Registro actualizado correctamente',
                 )
             );
         }
@@ -218,18 +213,17 @@ class EmpresaController extends \BaseController
     public function postCambiarestado()
     {
 
-        if ( Request::ajax() ) {
+        if (Request::ajax()) {
 
             $empresa = Empresa::find(Input::get('id'));
             $empresa->estado = Input::get('estado');
             $empresa->save();
             return Response::json(
                 array(
-                'rst'=>1,
-                'msj'=>'Registro actualizado correctamente',
+                    'rst' => 1,
+                    'msj' => 'Registro actualizado correctamente',
                 )
-            );    
-
+            );
         }
     }
 

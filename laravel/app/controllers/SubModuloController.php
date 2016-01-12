@@ -1,7 +1,11 @@
 <?php
 class SubmoduloController extends \BaseController
 {
-
+    public function __construct() 
+    {
+        $this->beforeFilter('csrf_token', ['only' => ['postCrear', 'postEditar']]);
+    }
+    
     /**
      * Store a newly created resource in storage.
      * POST /submodulo/cargar

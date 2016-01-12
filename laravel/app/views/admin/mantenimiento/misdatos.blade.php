@@ -3,9 +3,9 @@
 
 @section('includes')
 @parent
-    {{ HTML::script('js/psi.js') }}
-    @include( 'admin.mantenimiento.js.misdatos' )
-    @include( 'admin.mantenimiento.js.usuario_ajax' )
+{{ HTML::script('js/psi.js') }}
+@include( 'admin.mantenimiento.js.misdatos' )
+@include( 'admin.mantenimiento.js.usuario_ajax' )
 @stop
 <!-- Right side column. Contains the navbar and content of the page -->
 @section('contenido')
@@ -32,6 +32,7 @@
 
                 <!-- form start -->
                 <form role="form" method="post" action="" name="form_misdatos" id="form_misdatos">
+                    <input type="hidden" name="txt_token" id="txt_token" value="<?php echo Session::get('s_token'); ?>" />
                     <div class="col-md-6">
                         <div class="box box-primary">
                             <div class="box-header">

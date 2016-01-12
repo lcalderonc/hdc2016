@@ -280,6 +280,14 @@ class Gestion extends Eloquent {
                 $queryadicionalsql[2]=' AND gd.origen LIKE "%catv%"
                                         AND SUBSTRING_INDEX(SUBSTRING_INDEX(gd.fftt,"|",2),"|",-1) IN ("'.$troba.'") ';
             }
+
+            if ( Input::has('estado_ofsc') ){
+                $queryconestado=false;
+                $estado_ofsc=implode('","', Input::get('estado_ofsc'));
+                $filtro[0].=' AND gm.estado_ofsc_id IN ("'.$estado_ofsc.'")';
+               // $filtro[1].=' AND gm.estado_ofsc_id IN ("'.$estado_ofsc.'")';
+               //$filtro[2].=' AND gm.estado_ofsc_id IN ("'.$estado_ofsc.'")';
+            }
             
         }
         /*(
@@ -521,7 +529,8 @@ class Gestion extends Eloquent {
             "1" AS existe,
             "0" AS transmision,
             "" AS cierre_estado,
-            "" AS fh_agenda
+            "" AS fh_agenda,
+            "" as estado_ofsc
             '.$querydetalleaveria[0].'
             FROM webpsi_coc.averias_criticos_final gd
             LEFT JOIN webpsi_coc.averias_criticos_final_historico acfh
@@ -543,7 +552,8 @@ class Gestion extends Eloquent {
             "1" AS existe,
             "0" AS transmision,
             "" AS cierre_estado,
-            "" AS fh_agenda
+            "" AS fh_agenda,
+            ""  as estado_ofsc
             '.$querydetalleprovision[0].'
             FROM webpsi_coc.tmp_provision gd
             LEFT JOIN webpsi_coc.tmp_provision_historico tph 
@@ -595,7 +605,8 @@ class Gestion extends Eloquent {
                     "",CONCAT(gm.fecha_agenda," / ")
                 ),
                 IFNULL(h.horario,"")
-            ) AS fh_agenda
+            ) AS fh_agenda,
+            eo.nombre as estado_ofsc
             '.$querydetallegestion[0].'
             FROM gestiones g
             '.$queryadicionalsql[0].' 
@@ -607,6 +618,7 @@ class Gestion extends Eloquent {
                                 WHERE gm2.gestion_id=g.id
                              )
                    )
+            LEFT JOIN estados_ofsc eo ON gm.estado_ofsc_id=eo.id 
             INNER JOIN actividades a ON a.id=g.actividad_id
             INNER JOIN quiebres q ON q.id=gd.quiebre_id
             INNER JOIN empresas e ON e.id=gm.empresa_id
@@ -639,7 +651,7 @@ class Gestion extends Eloquent {
             $queryGestion2.=' LIMIT '.Input::get('start').','.Input::get('length');
          }
          DB::connection()->disableQueryLog();
-         // echo $queryGestion;
+         //echo   $queryGestion;
         try {
         $gestion2= DB::select($queryGestion2);
         $gestion= DB::select($queryGestion);

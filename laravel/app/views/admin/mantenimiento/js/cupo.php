@@ -178,7 +178,7 @@ $(document).ready(function() {
         var modal = $(this); //captura el modal
         modal.find('.modal-title').text(titulo+' Cupo');
         $('#form_cupos [data-toggle="tooltip"]').css("display","none");
-        $("#form_cupos input[type='hidden']").remove();
+//        $("#form_cupos input[type='hidden']").remove();
         
         //var data = {usuario_id: usuario_id};
         if(titulo=='Nuevo') {
@@ -193,6 +193,7 @@ $(document).ready(function() {
             modal.find('.modal-footer .btn-primary').attr('onClick','Agregar();');
             $('#form_cupos #slct_estado').val(1);
             $('#form_cupos #txt_nombre').focus();
+            $('#form_cupos #txt_token').val("<?php echo Session::get('s_token');?>");
             //eliminar los text
             $('.text').remove();
         }
@@ -224,6 +225,7 @@ $(document).ready(function() {
             $('#form_cupos #txt_capacidad').val( cuposObj[cupo_id].capacidad );
             $('#form_cupos #slct_estado').val(  cuposObj[cupo_id].estado );
             $("#form_cupos").append("<input type='hidden' value='"+cuposObj[cupo_id].id+"' name='id'>");
+            $('#form_cupos #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         $('#form_cupos #slct_horariotipo').change(function() {
             if ( $('#form_cupos #slct_horariotipo').val() !== '') {

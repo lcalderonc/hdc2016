@@ -894,25 +894,49 @@
                         <form id="form_update_ofsc" name="form_update_ofsc" action="" method="post" style="overflow: auto;height:400px;">
                             <div class="row form-group">
                                 <div class="col-sm-12">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <label>Código Actuación:</label>
                                         <input type="text" class="form-control" id="txt_codactu_update_toa_modal" readonly>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <label>Quiebre:</label>
                                         <input type="text" class="form-control" id="txt_quiebre_update_toa_modal" readonly>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-3">
                                         <label>Estado:</label>
                                         <input type="text" class="form-control" id="txt_estado_update_toa_modal" readonly>
                                     </div>
-                                </div>
-                                <div class="col-sm-12">
-                                    <div class="col-sm-5">
-                                        <label>Dirección:</label>
-                                        <textarea class="form-control" id="txt_direccion_update_toa_modal" name="txt_direccion_update_toa_modal"></textarea>
+                                    <div class="col-sm-3">
+                                        <label>Teléfono:</label>
+                                        <input type="text" class="form-control" id="txt_telefono">
                                     </div>
                                 </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-6">
+                                        <div class="col-sm-6">
+                                            <label><b>X:</b></label>
+                                            <input type="text" class="form-control" id="txt_x_modal2" name="txt_x_modal2" readonly>
+                                        </div>
+                                        <div class="col-sm-6">
+                                                <label><b>Y:</b></label>
+                                                <input type="text" class="form-control" id="txt_y_modal2" name="txt_y_modal2" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label>Dirección:</label>
+                                        <textarea class="form-control" id="txt_direccion_update_toa_modal" name="txt_direccion_update_toa_modal"></textarea>
+                                        <br>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="col-sm-6">
+                                        <div id="map_canvas2" style="width: 100%; height: 280px; text-align: center; position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"></div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div id="street_canvas2" style="width: 100%; height: 280px; text-align: center; position: relative; overflow: hidden; transform: translateZ(0px); background-color: rgb(229, 227, 223);"></div>
+                                    </div>
+                                </div>
+
                             </div>
                         </form>
                         <div class="modal-footer">

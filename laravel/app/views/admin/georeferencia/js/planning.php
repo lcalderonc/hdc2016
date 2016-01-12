@@ -237,7 +237,13 @@
 
         $("#btn_trazar").click(function() {
 
+            if ( $.trim( $("#slct_nodo").val() ) == '' ) {
+                alert("Seleccione almenos un MDF o Nodo ");
+                return false;
+            }
+            else {
             Geoplan.trazarPolygon(objMap);
+            }
             
             /*objMap = new google.maps.Map(document.getElementById('mymap'), {
                 zoom: 5,
@@ -292,7 +298,7 @@
         var data = {tipo: tiposel, modulo:'geoplan'};
         if (tiposel!=0) {
             $("#divselect").html('');
-            var _html="<label>&nbsp;</label><select class='form-control' name='slct_nodo[]' id='slct_nodo' onchange='' multiple='multiple' ></select>";
+            var _html="<select class='form-control' name='slct_nodo[]' id='slct_nodo' onchange='' multiple='multiple' ></select>";
             $("#divselect").html(_html);
     
             if (tiposel=='mdf') {
@@ -493,6 +499,7 @@
                 //var tec_lastUpdate = this.t.substr(-8)
                 var tec_x = this.x.replace(",", ".")
                 var tec_y = this.y.replace(",", ".")
+                var tec_fecha=this.tiempo
 
                 var go_gmap = "";
                 tecnico = this.carnet + " / " + this.nombre_tecnico;
@@ -592,8 +599,11 @@
                                 + "    <td></td>"
                                 + "</tr>"
                                 + "<tr>"
-                                + "    <td>" + this.EmployeeNum + "</td>"
+                                + "    <td>" + tec_fecha + "</td>"
                                 + "</tr>"
+                                //+ "<tr>"
+                                // + "    <td>" + this.EmployeeNum + "</td>"
+                                // + "</tr>"
                                 + "<tr>"
                                 + "    <td>" + "<a href=\"tel:" + tec_phone + "\">" + tec_phone + "</a></td>"
                                 + "</tr>"

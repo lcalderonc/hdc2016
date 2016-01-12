@@ -13,7 +13,7 @@ $(document).ready(function() {
       var modal = $(this); //captura el modal
       modal.find('.modal-title').text(titulo+' Empresa');
       $('#form_empresas [data-toggle="tooltip"]').css("display","none");
-      $("#form_empresas input[type='hidden']").remove();
+//      $("#form_empresas input[type='hidden']").remove();
 
         if(titulo=='Nuevo'){
             modal.find('.modal-footer .btn-primary').text('Guardar');
@@ -22,12 +22,14 @@ $(document).ready(function() {
             $('#form_empresas #txt_nombre').focus();
             $('#form_empresas #slct_estado').show();
             $('#form_empresas .n_estado').remove();
+            $('#form_empresas #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else{
             modal.find('.modal-footer .btn-primary').text('Actualizar');
             modal.find('.modal-footer .btn-primary').attr('onClick','Editar();');
             $('#form_empresas #txt_nombre').val( $('#t_empresas #nombre_'+button.data('id') ).text() );
             $('#form_empresas #slct_es_ec').val( $('#t_empresas #es_ec_'+button.data('id') ).attr("data-es_ec") );
+            $('#form_empresas #txt_token').val("<?php echo Session::get('s_token');?>");
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {
                 $('#form_empresas .n_estado').remove();

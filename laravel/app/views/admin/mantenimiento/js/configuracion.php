@@ -14,7 +14,7 @@
             var modal = $(this);
             modal.find('.modal-title').text(titulo+' Configuracion');
             $('#form_configuracion [data-toggle="tooltip"]').css("display","none");
-            $("#form_configuracion input[type='hidden']").remove();
+//            $("#form_configuracion input[type='hidden']").remove();
 
             if(titulo=='Nuevo') {
 
@@ -24,6 +24,7 @@
                 $('#form_configuracion #txt_nombre').focus();
                 $('#form_configuracion #slct_estado').show();
                 $('#form_configuracion .n_estado').remove();
+                $('#form_configuracion #txt_token').val("<?php echo Session::get('s_token');?>");
             }
             else {
                 var data = {'configuracion_id':configuracionObj[configuracion_id].id};
@@ -32,6 +33,7 @@
                 modal.find('.modal-footer .btn-primary').attr('onClick','Editar();');
                 $('#form_configuracion #txt_nombre').val( configuracionObj[configuracion_id].nombre );
                 $('#form_configuracion #txt_descripcion').val( configuracionObj[configuracion_id].descripcion );
+                $('#form_configuracion #txt_token').val("<?php echo Session::get('s_token');?>");
                 //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
                 if(eliminarG == 0) {
                     $('#form_configuracion .n_estado').remove();

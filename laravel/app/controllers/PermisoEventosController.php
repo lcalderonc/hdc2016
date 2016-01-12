@@ -2,6 +2,10 @@
 //controller
 class PermisoEventosController extends \BaseController
 {
+    public function __construct() 
+    {
+        $this->beforeFilter('csrf_token', ['only' => ['postEditar']]);
+    }
     
     public function postCargar()
     {

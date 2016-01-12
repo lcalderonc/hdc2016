@@ -364,7 +364,8 @@ class Visorgps extends Eloquent
         $sql = "SELECT
                     '' id, coord_x X, coord_y Y, numero MobileNumber, 
                     carnet EmployeeNum, bateria Battery, 
-                    DATE_FORMAT(fecha_hora, '%Y-%m-%d %H:%i:%s') t
+                    DATE_FORMAT(fecha_hora, '%Y-%m-%d %H:%i:%s') t,
+                    DATE_FORMAT(fecha_hora, '%d/%m/%Y %H:%i:%s') tiempo
                 FROM
                     webpsi_officetrack.ultimas_coordenadas
                 WHERE
