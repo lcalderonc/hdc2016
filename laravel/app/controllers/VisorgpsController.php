@@ -156,12 +156,14 @@ class VisorgpsController extends \BaseController
                         $agenda["tecnicos"][$key]->y = $loc->Y;
                         $agenda["tecnicos"][$key]->battery = $loc->Battery;
                         $agenda["tecnicos"][$key]->phone = $loc->MobileNumber;
+                        $agenda["tecnicos"][$key]->tiempo = $loc->tiempo;
                     }
                 } else {
                     $agenda["tecnicos"][$key]->x = "";
                     $agenda["tecnicos"][$key]->y = "";
                     $agenda["tecnicos"][$key]->battery = "";
                     $agenda["tecnicos"][$key]->phone = "";
+                    $agenda["tecnicos"][$key]->tiempo = "";
                 }
                 
                 //Iconos

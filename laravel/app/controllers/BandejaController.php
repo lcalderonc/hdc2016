@@ -25,6 +25,9 @@ class BandejaController extends \BaseController
         $activityId = Input::get('aid');
         
         $data["direccion"] = Input::get('direccion');
+        $data["telefono"] = Input::get('telefono');
+        $data["x"] = Input::get('coord_x');
+        $data["y"] = Input::get('coord_y');
         
         $activity = new Activity();
         $response = $activity->updateActivity($activityId, $data);
@@ -318,8 +321,8 @@ class BandejaController extends \BaseController
                 "XA_CONTACT_PHONE_NUMBER_3" => "",
                 "XA_CONTACT_PHONE_NUMBER_4" => "",
                 "XA_CITY_CODE" => "",
-                "XA_DISTRICT_CODE" => "",
-                "XA_DISTRICT_NAME" => "",
+                "XA_DISTRICT_CODE" => $actuArray['codigo_distrito'],
+                "XA_DISTRICT_NAME" => $actuArray['distrito'],
                 "XA_ZONE" => $actuArray['zonal'],
                 "XA_QUADRANT" => $cuadrante,
                 "XA_WORK_ZONE_KEY" => $wzKey,

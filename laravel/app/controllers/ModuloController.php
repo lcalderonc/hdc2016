@@ -2,7 +2,11 @@
 
 class ModuloController extends \BaseController
 {
-
+    public function __construct() 
+    {
+        $this->beforeFilter('csrf_token', ['only' => ['postCrear', 'postEditar']]);
+    }
+    
     /**
      * cargar modulos, mantenimiento
      * POST /modulo/cargar

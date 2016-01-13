@@ -121,6 +121,7 @@ Route::controller('usuario', 'UsuarioController');
 Route::controller('visorgps', 'VisorgpsController');
 Route::controller('zonal', 'ZonalController');
 Route::controller('actividadtipo', 'ActividadTipoController');
-
-// Enrutando o Direccionando al Error Controller
 Route::controller('errores', 'ErrorController');
+Route::controller('wsenvios', 'WsEnvioController');  
+Route::controller('estadoofsc', 'EstadoOfscController'); 
+Route::controller('enviosofsc', 'EnviosOfscController');

@@ -55,7 +55,7 @@ $(document).ready(function() {
         var modal = $(this); //captura el modal
         modal.find('.modal-title').text(titulo+' Troba');
         $('#form_trobas [data-toggle="tooltip"]').css("display","none");
-        $("#form_trobas input[type='hidden']").remove();
+//        $("#form_trobas input[type='hidden']").remove();
         
         if(titulo=='Nuevo') {
             Trobas.ListarEmpresas('nuevo',null);
@@ -70,6 +70,7 @@ $(document).ready(function() {
             $('#form_trobas #txt_nombre').focus();
             $('#form_trobas #slct_est_seguim').show();
             $('#form_trobas .n_estado').remove();
+            $('#form_trobas #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else {
             var contrata = TrobaObj[troba_id].empresa_id;
@@ -90,6 +91,7 @@ $(document).ready(function() {
             $('#form_trobas #txt_fecha_fin').val( TrobaObj[troba_id].fecha_fin );
             //$('#form_trobas #txt_fecha_planificacion').val( TrobaObj[troba_id].fecha_planificacion );
             $('#form_trobas #txt_digitalizacion').val( TrobaObj[troba_id].digitalizacion );
+            $('#form_trobas #txt_token').val("<?php echo Session::get('s_token');?>");
             //$('#form_trobas #txt_est_seguim').val( TrobaObj[troba_id].est_seguim );
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {

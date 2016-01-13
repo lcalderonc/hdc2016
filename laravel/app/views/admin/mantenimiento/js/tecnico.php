@@ -27,7 +27,7 @@ $(document).ready(function() {
         var modal = $(this); //captura el modal
         modal.find('.modal-title').text(titulo+' Tecnico');
         $('#form_tecnicos [data-toggle="tooltip"]').css("display","none");
-        $("#form_tecnicos input[type='hidden']").remove();
+//        $("#form_tecnicos input[type='hidden']").remove();
 
         if(titulo=='Nuevo'){
             $("#slct_celula").val(0);
@@ -39,6 +39,7 @@ $(document).ready(function() {
             $('#form_tecnicos #txt_ape_paterno').focus();
             $('#form_tecnicos #slct_estado').show();
             $('#form_tecnicos .n_estado').remove();
+            $('#form_tecnicos #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else{
             empresa_id=tecnicosObj[tecnico_id].empresa_id;
@@ -60,6 +61,7 @@ $(document).ready(function() {
             $('#form_tecnicos #txt_carnet').val( tecnicosObj[tecnico_id].carnet );
             $('#form_tecnicos #txt_carnet_tmp').val( tecnicosObj[tecnico_id].carnet_tmp );
             $('#form_tecnicos #txt_celular').val( tecnicosObj[tecnico_id].celular );
+            $('#form_tecnicos #txt_token').val("<?php echo Session::get('s_token');?>");
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {
                 $('#form_tecnicos .n_estado').remove();

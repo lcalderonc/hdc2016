@@ -13,7 +13,7 @@ $(document).ready(function() {
       var modal = $(this); //captura el modal
       modal.find('.modal-title').text(titulo+' Grupo de Quiebres');
       $('#form_quiebregrupos [data-toggle="tooltip"]').css("display","none");
-      $("#form_quiebregrupos input[type='hidden']").remove();
+//      $("#form_quiebregrupos input[type='hidden']").remove();
 
         if(titulo=='Nuevo'){
             modal.find('.modal-footer .btn-primary').text('Guardar');
@@ -22,11 +22,13 @@ $(document).ready(function() {
             $('#form_quiebregrupos #txt_nombre').focus();
             $('#form_quiebregrupos #slct_estado').show();
             $('#form_quiebregrupos .n_estado').remove();
+            $('#form_quiebregrupos #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else{
             modal.find('.modal-footer .btn-primary').text('Actualizar');
             modal.find('.modal-footer .btn-primary').attr('onClick','Editar();');
             $('#form_quiebregrupos #txt_nombre').val( $('#t_quiebregrupos #nombre_'+button.data('id') ).text() );
+            $('#form_quiebregrupos #txt_token').val("<?php echo Session::get('s_token');?>");
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {
                 $('#form_quiebregrupos .n_estado').remove();

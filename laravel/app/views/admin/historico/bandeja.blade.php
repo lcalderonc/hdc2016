@@ -204,16 +204,22 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-12 detalle" style="display:none">
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-3" style="display:none">
                                         <label>Tipo Actividad Ofsc:</label>
                                         <select class="form-control" name="slct_actividad_tipo[]" id="slct_actividad_tipo" multiple>
+                                            <option value="">.::Seleccione::.</option>
+                                        </select>
+                                        </div> 
+                                        <div class="col-sm-3">
+                                        <label>Estado Ofsc:</label>
+                                        <select class="form-control" name="slct_estado_ofsc[]" id="slct_estado_ofsc" multiple>
                                             <option value="">.::Seleccione::.</option>
                                         </select>
                                         </div>
                                     </div>
                                 </div>
                                 </form>
-                                <div class="box-body">
+                                <div class="box-body" style="min-height:250px">
                                     <table id="t_bandeja" class="table table-bordered table-striped col-sm-12 responsive" width="100%">
                                         <thead>
                                             <tr>
@@ -226,6 +232,7 @@
                                                 <th style='width:40px !important;'>MDF</th>
                                                 <th style='width:90px !important;'>Fecha Agenda</th>
                                                 <th style='width:200px !important;'>Tecnico</th>
+                                                <th>Estado Ofsc</th>
                                                 <th>Estado</th>
                                                 <th style="width: 100px !important;"> 
                                                     <a onclick="descargarReporte();" class="btn btn-success"><i class="fa fa-download fa-lg"></i></a>
@@ -247,6 +254,7 @@
                                                 <th>MDF</th>
                                                 <th>Fecha Agenda</th>
                                                 <th>Tecnico</th>
+                                                <th>Estado Ofsc</th>
                                                 <th>Estado</th>
                                                 <th> 
                                                     <a onclick="descargarReporte();" class="btn btn-success"><i class="fa fa-download fa-lg"></i></a> 

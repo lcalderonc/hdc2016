@@ -103,6 +103,12 @@ class Activity extends Ofsc
                     "value" => $data["y"],
                 );
             }
+            if ( isset($data["telefono"]) ) {
+                $propArray[] = array(
+                    "name" => "phone",
+                    "value" => $data["telefono"],
+                );
+            }
             
             $setArray = array(
                 "activity_id" => $activityId,

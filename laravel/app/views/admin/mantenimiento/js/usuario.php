@@ -38,7 +38,7 @@ $(document).ready(function() {
         var modal = $(this);
         modal.find('.modal-title').text(titulo+' Usuario');
         $('#form_usuarios [data-toggle="tooltip"]').css("display","none");
-        $("#form_usuarios input[type='hidden']").remove();
+//        $("#form_usuarios input[type='hidden']").remove();
 
 
         var funciones = {change:ChangeGrupoQuiebre, success:successGrupoQuiebre};
@@ -57,6 +57,7 @@ $(document).ready(function() {
             $('#form_usuarios #txt_nombre').focus();
             $('#form_usuarios #slct_estado').show();
             $('#form_usuarios .n_estado').remove();
+            $('#form_usuarios #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else {
             var data = {usuario_id: UsuarioObj[usuario_id].id};
@@ -70,7 +71,7 @@ $(document).ready(function() {
             slctGlobal.listarSlct('empresa','slct_empresa','simple',[UsuarioObj[usuario_id].empresa_id], data);
             $('#slct_area').multiselect('select', UsuarioObj[usuario_id].area_id);
             $('#slct_area').multiselect('rebuild');
-
+            
             Usuario.CargarZonales(UsuarioObj[usuario_id].id);
             $('#txt_password').val(''); // Limpia la caja al editar
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
@@ -87,7 +88,8 @@ $(document).ready(function() {
             $('#form_usuarios #slct_estado').val( UsuarioObj[usuario_id].estado );
             
             $('#form_usuarios #slct_sexo').val( UsuarioObj[usuario_id].sexo );
-
+            $('#form_usuarios #txt_token').val("<?php echo Session::get('s_token');?>");
+            
             if(titulo!='Editar'){
                 $('#form_usuarios #txt_nombre').val( '' );
                 $('#form_usuarios #txt_apellido').val( '' );
@@ -100,6 +102,7 @@ $(document).ready(function() {
                 modal.find('.modal-footer .btn-primary').attr('onClick','Agregar();');
                 $('#form_usuarios #slct_estado').val(1); 
                 $('#form_usuarios #txt_nombre').focus();
+                $('#form_usuarios #txt_token').val("<?php echo Session::get('s_token');?>");
             }
             else{
                 modal.find('.modal-footer .btn-primary').text('Actualizar');
@@ -347,15 +350,15 @@ CargarPrivilegios=function(idModulo){
     //console.log(obj);
     var valor= idModulo;
     var idUsuario = UsuarioObj[usuario_id].id;
+    var perfil = UsuarioObj[usuario_id].perfil_id;
     var formulario=$("#slct_submodulos"+idModulo).serialize().split("slct_").join(""); 
-
     var btn_value = $("#t_privilegios"+valor).attr("value");
         if ( btn_value=='-' )
         {
             $("#t_privilegios"+valor).slideUp();
             $("#t_privilegios"+valor).attr("value", "+");
         } else {
-            Usuario.CargarPrivilegio(idUsuario, idModulo,formulario); //Solo cargo los privilegios cuando estan sin desplegarse
+            Usuario.CargarPrivilegio(idUsuario, idModulo,formulario, perfil); //Solo cargo los privilegios cuando estan sin desplegarse
             $("#t_privilegios"+valor).slideDown();
             $("#t_privilegios"+valor).attr("value", "-");
         }

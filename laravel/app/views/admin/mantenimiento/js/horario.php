@@ -12,7 +12,7 @@ $(document).ready(function() {
         var modal = $(this); //captura el modal
         modal.find('.modal-title').text(titulo+' Horario');
         $('#form_horario [data-toggle="tooltip"]').css("display","none");
-        $("#form_horario input[type='hidden']").remove();
+//        $("#form_horario input[type='hidden']").remove();
         
         if(titulo=='Nuevo'){
             var datos={estado:1};
@@ -24,6 +24,7 @@ $(document).ready(function() {
             $('#form_horario #txt_hora_fin').attr('onClick','varmin();');
             $('#form_horario #slct_estado').show();
             $('#form_horario .n_estado').remove();
+            $('#form_horario #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else{
             ids=[]; ids.push(horarioObj[horario_id].idthorario);
@@ -32,7 +33,8 @@ $(document).ready(function() {
             modal.find('.modal-footer .btn-primary').attr('onClick','Editar3();');
             $('#form_horario #txt_horario').val( horarioObj[horario_id].horario );
             $('#form_horario #txt_hora_inicio').val( horarioObj[horario_id].hora_inicio );
-			$('#form_horario #txt_hora_fin').val( horarioObj[horario_id].hora_fin );
+            $('#form_horario #txt_hora_fin').val( horarioObj[horario_id].hora_fin );
+            $('#form_horario #txt_token').val("<?php echo Session::get('s_token');?>");
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {
                 $('#form_horario .n_estado').remove();

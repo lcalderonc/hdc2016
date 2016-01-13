@@ -13,10 +13,10 @@
             var modal = $(this);
             modal.find('.modal-title').text(titulo+' Actividad');
             $('#form_actividades [data-toggle="tooltip"]').css("display","none");
-            $("#form_actividades input[type='hidden']").remove();
+//            $("#form_actividades input[type='hidden']").remove();
 
             if(titulo=='Nuevo') {
-
+                $('#form_actividades #txt_token').val("<?php echo Session::get('s_token');?>"); 
                 modal.find('.modal-footer .btn-primary').text('Guardar');
                 modal.find('.modal-footer .btn-primary').attr('onClick','Agregar();');
                 $('#form_actividades #slct_estado').val(1);
@@ -30,6 +30,7 @@
                 modal.find('.modal-footer .btn-primary').text('Actualizar');
                 modal.find('.modal-footer .btn-primary').attr('onClick','Editar();');
                 $('#form_actividades #txt_nombre').val( actividadObj[actividad_id].nombre );
+                $('#form_actividades #txt_token').val("<?php echo Session::get('s_token');?>"); 
                 //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
                 if(eliminarG == 0) {
                     $('#form_actividades .n_estado').remove();

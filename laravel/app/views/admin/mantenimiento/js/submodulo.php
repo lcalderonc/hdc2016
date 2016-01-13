@@ -11,7 +11,7 @@ $(document).ready(function() {
         var modal = $(this); //captura el modal
         modal.find('.modal-title').text(titulo+' Submodulo');
         $('#form_submodulos [data-toggle="tooltip"]').css("display","none");
-        $("#form_submodulos input[type='hidden']").remove();
+//        $("#form_submodulos input[type='hidden']").remove();
         
         if(titulo=='Nuevo') {
             Submodulos.cargarModulos('nuevo',null);
@@ -19,6 +19,7 @@ $(document).ready(function() {
             modal.find('.modal-footer .btn-primary').attr('onClick','Agregar();');
             $('#form_submodulos #slct_estado').val(1);
             $('#form_submodulos #txt_nombre').focus();
+            $('#form_submodulos #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else {
             modulo_id=$('#t_submodulos #modulo_id_'+button.data('id') ).attr('modulo_id');
@@ -27,6 +28,7 @@ $(document).ready(function() {
             modal.find('.modal-footer .btn-primary').attr('onClick','Editar();');
             $('#form_submodulos #txt_nombre').val( $('#t_submodulos #nombre_'+button.data('id') ).text() );
             $('#form_submodulos #txt_path').val( $('#t_submodulos #path_'+button.data('id') ).text() );
+            $('#form_submodulos #txt_token').val("<?php echo Session::get('s_token');?>");
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {
                 var est = $('#t_submodulos #estado_'+button.data('id') ).attr("data-estado");

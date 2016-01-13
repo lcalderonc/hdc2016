@@ -2,6 +2,8 @@
 
 class OutboundController extends \BaseController
 {
+    private $_processId;
+    
     public function getServer()
     {
         function isTimestampIsoValid($timestamp)
@@ -46,6 +48,8 @@ class OutboundController extends \BaseController
             //$datetimePsi->add(new DateInterval('PT5H'));
             //considerar la diferencia de hora quellega
             $datetimeToa = new DateTime($toaNow);
+            $datetimeToa->sub(new DateInterval('PT5H'));
+            
             $segPsi = strtotime($datetimePsi->format('Y-m-d H:i:s'));
             $segToa = strtotime($datetimeToa->format('Y-m-d H:i:s'));
             $diferencia = abs($segPsi-$segToa);
@@ -77,9 +81,39 @@ class OutboundController extends \BaseController
         }
         function send_message($request)
         {
+            //ID de proceso
+            function make_seed()
+            {
+              list($usec, $sec) = explode(' ', microtime());
+              return (float) $sec + ((float) $usec * 100000);
+            }
+            mt_srand(make_seed());
+            $randval = md5( mt_rand() );
+            
+            //Guardar todo para pruebas
+            DB::table('log_ofsc')->insert(
+                [
+                    'process' => $randval,
+                    'type' => 'full', 
+                    'body' => serialize($request), 
+                    'created_at' => date("Y-m-d H:i:s")
+                ]
+            );
+            
             $validacion="is not authorized";
             if ( isset($request->user) ) {
                 $validacion = validarUsuario($request->user);
+                
+                //Guardar resultado de validacion
+                DB::table('log_ofsc')->insert(
+                    [
+                        'process' => $randval,
+                        'type' => 'validate', 
+                        'body' => serialize($validacion), 
+                        'created_at' => date("Y-m-d H:i:s")
+                    ]
+                );
+                
                 if ($validacion<>1) {
                     return new SoapFault('SOAP-ENV:Client', $validacion, 'Authentication module');
                 }
@@ -91,6 +125,15 @@ class OutboundController extends \BaseController
                 return new SoapFault('SOAP-ENV:Client', $validacion, 'Authentication module');
             }
             $message = $request->messages->message;
+            
+            DB::table('log_ofsc')->insert(
+                [
+                    'process' => $randval,
+                    'type' => 'content', 
+                    'body' => serialize($message), 
+                    'created_at' => date("Y-m-d H:i:s")
+                ]
+            );
 
             //validar si es array u objeto
             //cuando llega un elemento llega como objecto
@@ -114,6 +157,7 @@ class OutboundController extends \BaseController
                     body
                     */
                     //validar json
+                    $message[$i]->company_id='';
                     $body = json_decode($message[$i]->body);
                     if ($body !== null) {
                         $apptNumber = $body->appt_number;
@@ -137,7 +181,16 @@ class OutboundController extends \BaseController
                     );
                     array_push($return, $data);
                 }
-                Queue::push('NotificacionController@sendMessage', $message);
+                $push = Queue::push('NotificacionController@sendMessage', $message);
+                
+                DB::table('log_ofsc')->insert(
+                    [
+                        'process' => $randval,
+                        'type' => 'push', 
+                        'body' => serialize($push), 
+                        'created_at' => date("Y-m-d H:i:s")
+                    ]
+                );
 
                 return $return;
             }

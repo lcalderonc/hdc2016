@@ -12,7 +12,7 @@ $(document).ready(function() {
         var modal = $(this); //captura el modal
         modal.find('.modal-title').text(titulo+' Quiebre');
         $('#form_quiebres [data-toggle="tooltip"]').css("display","none");
-        $("#form_quiebres input[type='hidden']").remove();
+//        $("#form_quiebres input[type='hidden']").remove();
         
         if(titulo=='Nuevo'){
             
@@ -24,6 +24,7 @@ $(document).ready(function() {
             $('#form_quiebres #txt_nombre').focus();
             $('#form_quiebres #slct_estado').show();
             $('#form_quiebres .n_estado').remove();
+            $('#form_quiebres #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else{
             var grupo_quiebre_id=quiebreObj[quiebre_id].grupo_quiebre_id;
@@ -38,6 +39,7 @@ $(document).ready(function() {
             modal.find('.modal-footer .btn-primary').attr('onClick','Editar();');
             $('#form_quiebres #txt_nombre').val( quiebreObj[quiebre_id].nombre );
             $('#form_quiebres #txt_apocope').val( quiebreObj[quiebre_id].apocope );
+            $('#form_quiebres #txt_token').val("<?php echo Session::get('s_token');?>");
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {
                 $('#form_quiebres .n_estado').remove();

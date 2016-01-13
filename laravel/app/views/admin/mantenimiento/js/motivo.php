@@ -20,7 +20,7 @@ $(document).ready(function() {
       var modal = $(this); //captura el modal
       modal.find('.modal-title').text(titulo+' Motivo');
       $('#form_motivos [data-toggle="tooltip"]').css("display","none");
-      $("#form_motivos input[type='hidden']").remove();
+//      $("#form_motivos input[type='hidden']").remove();
 
         if(titulo=='Nuevo') {
             modal.find('.modal-footer .btn-primary').text('Guardar');
@@ -29,11 +29,13 @@ $(document).ready(function() {
             $('#form_motivos #txt_nombre').focus();
             $('#form_motivos #slct_estado').show();
             $('#form_motivos .n_estado').remove();
+            $('#form_motivos #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else {
             modal.find('.modal-footer .btn-primary').text('Actualizar');
             modal.find('.modal-footer .btn-primary').attr('onClick','Editar();');
             $('#form_motivos #txt_nombre').val( cuposObj[motivo_id].nombre );
+            $('#form_motivos #txt_token').val("<?php echo Session::get('s_token');?>");
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {
                 $('#form_motivos .n_estado').remove();

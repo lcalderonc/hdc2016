@@ -15,7 +15,7 @@ $(document).ready(function() {
       var modal = $(this); //captura el modal
       modal.find('.modal-title').text(titulo+' Matriz PSI');
       $('#form_estadomotivosubmotivos [data-toggle="tooltip"]').css("display","none");
-      $("#form_estadomotivosubmotivos input[type='hidden']").remove();
+//      $("#form_estadomotivosubmotivos input[type='hidden']").remove();
 
         if(titulo=='Nuevo') {
            $('#slct_motivo').val('');
@@ -30,6 +30,7 @@ $(document).ready(function() {
             $('#form_estadomotivosubmotivos #slct_descripcion').val(1); 
             $('#form_estadomotivosubmotivos #slct_estado4').show();
             $('#form_estadomotivosubmotivos .n_estado').remove();
+            $('#form_estadomotivosubmotivos #txt_token').val("<?php echo Session::get('s_token');?>");
         }
         else {
             var data = {estadomotivosubmotivo_id: estadomotivosubmotivoObj[estadomotivosubmotivo_id].id};
@@ -43,6 +44,7 @@ $(document).ready(function() {
             $('#slct_estados').multiselect('select', estadomotivosubmotivoObj[estadomotivosubmotivo_id].estado_id);
 
             $('#form_estadomotivosubmotivos #slct_descripcion').val( tecnico );
+            $('#form_estadomotivosubmotivos #txt_token').val("<?php echo Session::get('s_token');?>");
             //PRIVILEGIO DESACTIVAR EN LA OPCION DE EDITAR
             if(eliminarG == 0) {
                 $('#form_estadomotivosubmotivos .n_estado').remove();

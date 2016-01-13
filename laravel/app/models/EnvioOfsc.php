@@ -18,15 +18,16 @@ class EnvioOfsc extends \Eloquent
      * @param string $respuestaEstadoWs status final de la WS
      */
     public function registrarAccionWebservice($accion, $dataReq, $contenidoResp,
-                                             $respuestaEstadoWs=1)
+                                             $usuario) 
     {
             DB::table('envios_ofsc')->insert(
                 array(
                  'accion'             => $accion,
                  'enviado'            => $dataReq,
                  'respuesta'          => $contenidoResp,
-                 'estadoRespuestaWs' => $respuestaEstadoWs,
-                 'usuario_created_at' => Auth::user()->id
+                 'usuario_created_at' => $usuario,
+                 'created_at' => DB::raw('NOW()')
+
                 )
             );
 

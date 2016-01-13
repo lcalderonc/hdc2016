@@ -202,6 +202,11 @@ var Bandeja={
                     },
                     {
                         "targets": 9,
+                        "data": "estado_ofsc",
+                        "name": "estado_ofsc"
+                    },
+                    {
+                        "targets": 10,
                         "data": function ( row, type, val, meta) {
                             return row.estado+"<br><font color='#327CA7'>"+row.cierre_estado+"</font>";
                         },
@@ -209,7 +214,7 @@ var Bandeja={
                         "name": "estado"
                     },
                     {
-                        "targets": 10,
+                        "targets": 11,
                         "orderable":false,
                         "searchable": false,
                         "data": function ( row, type, val, meta ) {

@@ -6,6 +6,7 @@ class ActividadController extends BaseController
     public function __construct()
     {
         $this->beforeFilter('auth'); // bloqueo de acceso
+        $this->beforeFilter('csrf_token', ['only' => ['postCrear', 'postEditar']]);
     }
 
     /**
@@ -88,7 +89,7 @@ class ActividadController extends BaseController
             $actividades = new Actividad;
             $actividades->nombre = Input::get('nombre');
             $actividades->estado = Input::get('estado');
-            $actividades->usuario_created_at = Auth::user()->id;
+//            $actividades->usuario_created_at = Auth::user()->id;
             $actividades->save();
 
             return Response::json(
@@ -129,7 +130,7 @@ class ActividadController extends BaseController
             $actividades = Actividad::find($areaId);
             $actividades->nombre = Input::get('nombre');
             $actividades->estado = Input::get('estado');
-            $actividades->usuario_updated_at = Auth::user()->id;
+//            $actividades->usuario_updated_at = Auth::user()->id;
             $actividades->save();
 
             return Response::json(
@@ -147,7 +148,7 @@ class ActividadController extends BaseController
 
             $actividad = Actividad::find(Input::get('id'));
             $actividad->estado = Input::get('estado');
-            $actividad->usuario_updated_at = Auth::user()->id;
+//            $actividad->usuario_updated_at = Auth::user()->id;
             $actividad->save();
             return Response::json(
                 array(

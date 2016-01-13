@@ -545,6 +545,9 @@ class ReporteController extends BaseController
                 <td>fftt</td>".$outputcab."
                 <td>Estado Legados</td>
                 <td>Fec.Liq.Legados</td>
+                <td>Estado OFSC</td>
+                <td>Aid</td>
+                <td>Envio OFSC</td>
             </tr>";
 
         foreach ($cliente as $row) {
@@ -602,6 +605,9 @@ class ReporteController extends BaseController
                     . $outputdet
                     . "<td>" . $row->estado_legado . "</td>"
                     . "<td>" . $row->fec_liq_legado . "</td>"
+                    . "<td>" . $row->estado_ofsc . "</td>"
+                    . "<td>" . $row->aid . "</td>"
+                    . "<td>" . $row->envio_ofsc . "</td>"
                     . "</tr>";
 
         }

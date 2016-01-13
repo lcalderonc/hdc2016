@@ -177,7 +177,7 @@ var Usuario={
             }
         });
     },
-    CargarPrivilegio:function(usuario_id, modulo_id,formulario){
+    CargarPrivilegio:function(usuario_id, modulo_id,formulario, perfil){
         $.ajax({
             url         : 'usuario/cargarprivilegios',
             type        : 'POST',
@@ -195,15 +195,19 @@ var Usuario={
 
                     var data = formulario.split("&"); //corto el combobox serializado
                     var variable = 0;
+
+                    if(perfil == 8) var tooltip = 'title="SUPER USER" disabled';
+
                     html+='<tr>';
                         html+='<td></td>';
-                        html+='<td style="width: 15px" align="center"><input type="checkbox" class="checkbox" id="chkAll'+con+'" onclick="javascript:CheckUncheckall(this,'+con+' );">Todos</th></td>';
-                        html+='<td style="width: 15px" align="center"><input type="checkbox" class="checkbox" id="chkAll2'+con+'" onclick="javascript:CheckUncheckall2(this,'+con+' );">Todos</td>';
-                        html+='<td style="width: 15px" align="center"><input type="checkbox" class="checkbox" id="chkAll3'+con+'" onclick="javascript:CheckUncheckall3(this,'+con+' );">Todos</td>';
+                        html+='<td style="width: 15px" align="center"><input type="checkbox" '+tooltip+' class="checkbox" id="chkAll'+con+'" onclick="javascript:CheckUncheckall(this,'+con+' );">Todos</th></td>';
+                        html+='<td style="width: 15px" align="center"><input type="checkbox" '+tooltip+' class="checkbox" id="chkAll2'+con+'" onclick="javascript:CheckUncheckall2(this,'+con+' );">Todos</td>';
+                        html+='<td style="width: 15px" align="center"><input type="checkbox" '+tooltip+' class="checkbox" id="chkAll3'+con+'" onclick="javascript:CheckUncheckall3(this,'+con+' );">Todos</td>';
                         html+='</tr>';
-
+                       
                   //  var arr_nombre = $("#slct_submodulos"+modulo_id+" option:selected");
                  //   alert(arr_nombre[0].text());
+
                     var selText  = [];
                     $("#slct_submodulos"+modulo_id+" option:selected").each(function () {
                         selText.push($(this).text());
@@ -219,12 +223,13 @@ var Usuario={
                             if(datos.eliminar == 1) { eliminar = 'checked'; } else { eliminar = ''; }
             
                             //alert(comparar[1]);
+                            
                             if(comparar[1] == datos.submodulo_id) {
                                 html+='<tr>';
                                 html+='<td>'+datos.nombre+'</td>';
-                                html+='<td style="width: 15px" align="center"><input type="checkbox" class="checkbox opcion'+con+'" value="1" name="privilegio'+datos.submodulo_id+'[]" '+agregar+'></td>';
-                                html+='<td style="width: 15px" align="center"><input type="checkbox" class="checkbox opcion2'+con+'" value="2" name="privilegio'+datos.submodulo_id+'[]" '+editar+'></td>';
-                                html+='<td style="width: 15px" align="center"><input type="checkbox" class="checkbox opcion3'+con+'" value="3" name="privilegio'+datos.submodulo_id+'[]" '+eliminar+'></td>';
+                                html+='<td style="width: 15px" align="center"><input '+tooltip+' type="checkbox" class="checkbox opcion'+con+'" value="1" name="privilegio'+datos.submodulo_id+'[]" '+agregar+'></td>';
+                                html+='<td style="width: 15px" align="center"><input '+tooltip+' type="checkbox" class="checkbox opcion2'+con+'" value="2" name="privilegio'+datos.submodulo_id+'[]" '+editar+'></td>';
+                                html+='<td style="width: 15px" align="center"><input '+tooltip+' type="checkbox" class="checkbox opcion3'+con+'" value="3" name="privilegio'+datos.submodulo_id+'[]" '+eliminar+'></td>';
                                 html+='</tr>';
                                 variable = comparar[1];
 

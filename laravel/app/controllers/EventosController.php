@@ -2,7 +2,11 @@
 //controller
 class EventosController extends \BaseController
 {
-    
+    public function __construct() 
+    {
+        $this->beforeFilter('csrf_token', ['only' => ['postCrear', 'postEditar']]);
+    }
+
     public function postCargar()
     {
         //si la peticion es ajax

@@ -1,6 +1,6 @@
 <?php 
+use controllers\EnviosOfscController; 
 namespace Ofsc;
-use models\EnvioOfsc; 
 
 /**
 * clase padre de configuracion para consumir web service
@@ -34,10 +34,9 @@ class Ofsc
         
         $wsOptArray = \Config::get("ofsc.fwdev");
         $wsOptArray["stream_context"] = $context;
-
+        
         $soapClient = new \SoapClient(
             $this->_wsdl,
-            //"http://www.webservicex.net/CurrencyConvertor.asmx?WSDL",
             $wsOptArray
             //array(
             //    "stream_context" => $context,
@@ -104,30 +103,28 @@ class Ofsc
     
     protected function doAction($action, $setArray)
     {
-        $resultaoArrayReq = implode("|", $setArray);
-    
-        $response = new \stdClass();       
+        //$resultaoArrayReq = implode("|", $setArray);
+        
+        $response = new \stdClass();
         
         try {
-
             $response->error = false;
             $requestArray = array_merge($this->getAuthArray(), $setArray);
             $result = $this->_client->__soapCall(
                 $action, array("request"=>$requestArray)
-            );    
- 
-
-
- // print htmlentities($this->_client->__getLastResponse());
-
-            
+            );
   
-             //dd("Home");
+            //registrando envios de WebServices
+            $envios = new \EnviosOfscController();
+            $envios->registrarEnviosOfsc(
+                $action, $requestArray,
+                $result
+            ); 
+ 
             $response->data = $result;
 
             //$response->data = simplexml_load_string($xml);
             //$xml = $this->client->__soapCall($action, $requestArray);
-            //print_r($xml);
             
             //->Inicio respuesta test
             //$responseFunc = $action . '_response';
@@ -137,29 +134,30 @@ class Ofsc
             //->Fin respuesta test
 
             return $response;
-        } catch (SoapFault $fault) {
+        } catch (\SoapFault $fault) {
+
             $response->error = true;
             $response->errorCode = $fault->faultcode;
             $response->errorString = $fault->faultstring;
 
-            //Registro de webservice fallido
-            $envios = new \EnvioOfsc();
-            $envios->registrarAccionWebservice(
-                $action, 
-                $resultaoArrayReq, "", 0
-            );           
+            //registrando envios de WebServices
+            $envios = new \EnviosOfscController();
+            $envios->registrarEnviosOfsc(
+                $action, $requestArray,
+                $fault->faultcode.$fault->faultstring
+            );             
 
             return $response;
-        } catch (Exception $error) {
+        } catch (\Exception $error) {
             $response->error = true;
-            $response->errorString = $error->getMessage();
+            $response->errorString = $error->getMessage();            
 
-            //Registro de webservice fallido
-            $envios = new \EnvioOfsc();
-            $envios->registrarAccionWebservice(
-                $action, 
-                $resultaoArrayReq, "", 0
-            );
+            //registrando envios de WebServices
+            $envios = new \EnviosOfscController();
+            $envios->registrarEnviosOfsc(
+                $action, $requestArray,
+                $error->getMessage()
+            );             
 
             return $response;
         }

@@ -6,6 +6,7 @@ class TecnicoController extends BaseController
     public function __construct()
     {
         $this->beforeFilter('auth'); // bloqueo de acceso
+        $this->beforeFilter('csrf_token', ['only' => ['postCrear', 'postEditar']]);
     }
 
     /**

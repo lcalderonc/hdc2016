@@ -2,6 +2,11 @@
 
 class ConfiguracionController extends BaseController
 {
+    public function __construct() 
+    {
+        $this->beforeFilter('csrf_token', ['only' => ['postCrear', 'postEditar']]);
+    }
+    
     /**
      * Listar registro de configuraciones con estado 1
      * POST /configuracion/cargar

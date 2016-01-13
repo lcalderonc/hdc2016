@@ -5,6 +5,7 @@ class ThorarioController extends BaseController
 
     public function __construct(ErrorController $ErrorController){
         $this->error = $ErrorController;
+        $this->beforeFilter('csrf_token', ['only' => ['postCrear', 'postEditar']]);
     }
     /**
      * cargar thorarios, mantenimiento

@@ -4,6 +4,9 @@ var currentPage = 0;
 var Areas={
     AgregarEditarArea:function(AE){
         var datos=$("#form_areas").serialize().split("txt_").join("").split("slct_").join("");
+//        var txt_token = $("#txt_token").val();
+//        alert("Cod Token: "+txt_token);
+//        alert($("#form_areas").serialize());
         var accion="area/crear";
         if(AE==1){
             accion="area/editar";
@@ -15,18 +18,18 @@ var Areas={
             cache       : false,
             dataType    : 'json',
             data        : datos,
+//            data        : datos+"&txt_token="+txt_token,
             beforeSend : function() {
                 $("body").append('<div class="overlay"></div><div class="loading-img"></div>');
             },
             success : function(obj) {
                 $(".overlay,.loading-img").remove();
                 if(obj.rst==1){
+                    $('#t_areas').dataTable().fnDestroy();
                     search=$('input[type=search]').val();
                     var table = $('#t_areas').DataTable();
                     var info = table.page.info();
                     currentPage = info.page;
-
-                    $('#t_areas').dataTable().fnDestroy();
 
                     Areas.CargarAreas(activarTabla);
                     $('#t_areas').dataTable().fnPageChange(currentPage,true);
@@ -74,6 +77,7 @@ var Areas={
                         $('#nuevo').remove();  
                     }
                     $.each(obj.datos,function(index,data) {
+                        
                         estadohtml='<span id="'+data.id+'" onClick="activar('+data.id+')" class="btn btn-danger">Inactivo</span>';
                         if(data.estado==1){
                             estadohtml='<span id="'+data.id+'" onClick="desactivar('+data.id+')" class="btn btn-success">Activo</span>';
@@ -99,6 +103,7 @@ var Areas={
                        html+="</tr>";
                     });
                 }
+                $("#t_areas").dataTable().fnDestroy();
                 
                 $("#tb_areas").html(html); 
                 if(editarG == 0) $('.editarG').hide();  

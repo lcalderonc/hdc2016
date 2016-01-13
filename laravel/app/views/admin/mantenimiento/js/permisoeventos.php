@@ -20,7 +20,7 @@ $(document).ready(function() {
     var modal = $(this); //captura el modal
     modal.find('.modal-title').text(titulo+' PermisoEventos');
     $('#form_permisoeventos [data-toggle="tooltip"]').css("display","none");
-    $("#form_permisoeventos input[type='hidden']").remove();
+//    $("#form_permisoeventos input[type='hidden']").remove();
     
     var data ={tipo:'1',tipo_persona:PermisoeventoObj[Permisoevento_id].tipo_persona, usuario_id: PermisoeventoObj[Permisoevento_id].id};
     var data_={tipo:'2',tipo_persona:PermisoeventoObj[Permisoevento_id].tipo_persona, usuario_id: PermisoeventoObj[Permisoevento_id].id};
@@ -28,6 +28,7 @@ $(document).ready(function() {
     slctGlobal.listarSlct('eventos','slct_metodo','multiple',null,data_);  
     modal.find('.modal-footer .btn-primary').text('Actualizar');
     modal.find('.modal-footer .btn-primary').attr('onClick','Editar();');
+    $('#form_permisoeventos #txt_token').val("<?php echo Session::get('s_token');?>");
     $('#form_permisoeventos #txt_nombre').val( PermisoeventoObj[Permisoevento_id].nombre +
             ' '+PermisoeventoObj[Permisoevento_id].apellido);
     $("#form_permisoeventos").append("<input type='hidden' value='"+

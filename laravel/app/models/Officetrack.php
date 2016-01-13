@@ -53,4 +53,38 @@ class Officetrack extends \Eloquent
         return $result;
     }
 
+    public function registrar( $trama, $response)
+    {
+
+        $db = "webpsi_officetrack";
+        $table = "wsenvios";
+        try {
+
+            //Iniciar transaccion
+            DB::beginTransaction();
+
+            //Registrar error
+            $fecha = date("Y-m-d H:i:s");
+            DB::insert("INSERT INTO $db.$table
+                    (
+                        fecha, trama, response
+                    )
+                    VALUES
+                    (
+                       ?, ?, ?
+                    )",array($fecha, $trama, $response));
+
+            DB::commit();
+            $result["estado"] = true;
+            $result["msg"] = "Trama enviada hacia OT";
+            return $result;
+        } catch (PDOException $error) {
+            //Rollback
+            DB::rollBack();
+            $this->error->handlerError($error);
+            $result["estado"] = false;
+            $result["msg"] = $error->getMessage();
+            return $result;
+        }
+    }
 }
